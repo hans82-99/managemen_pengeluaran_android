@@ -3,17 +3,180 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@drawable/backgroundsemua"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <LinearLayout
+        android:id="@+id/iniheader"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.07">
+
+        <TextView
+            android:id="@+id/namadash"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:text="Nicco Ananta Tri Kusuma"
+            android:textColor="#8D493A"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:text="Manajemen adalah hal yang bagus"
+            android:textColor="#8D493A"
+            android:textSize="12sp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inibalance"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/backgroundbalance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iniheader"
+        app:layout_constraintVertical_bias="0.05">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="#F8EDE3"
+                android:text="Total Balance" />
+
+            <TextView
+                android:id="@+id/totalbalancedash"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:fontFamily="@font/inter_semibold"
+                android:gravity="right"
+                android:text="Rp. 800.000.000,00"
+                android:textColor="#F8EDE3"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="#F8EDE3"
+                    android:text="Income" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="#F8EDE3"
+                    android:text="Expense" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:id="@+id/incomedash"
+                    android:layout_width="150dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="30dp"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Rp. 800.000.000,00"/>
+
+                <TextView
+                    android:id="@+id/expensedash"
+                    android:layout_width="150dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="50dp"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Rp. 800.000.000,00"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inibalance"
+        app:layout_constraintVertical_bias="0.05"
+        android:orientation="vertical">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:text="Histori Pengeluaran"
+                android:textColor="#8D493A"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/tampilkansemua"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:textSize="12sp"
+                android:textColor="#F8EDE3"
+                android:text="Semua"
+                android:fontFamily="@font/inter"
+                android:layout_marginLeft="140dp"
+                android:background="@drawable/buttondash"/>
+
+        </LinearLayout>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historidash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
