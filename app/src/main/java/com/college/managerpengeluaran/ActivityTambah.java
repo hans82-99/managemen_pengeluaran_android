@@ -2,44 +2,40 @@ package com.college.managerpengeluaran;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import com.college.managerpengeluaran.R;
-
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityTambah extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_tambah);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        /// maybe you gonna ask why i not using switch case instead ((error: constant expression required)) <<<
+        //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nb_home);
+        bottomNavigationView.setSelectedItemId(R.id.nb_tambah);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nb_home) {
-                return true;
-            } else if (itemId == R.id.nb_tambah) {
-                startActivity(new Intent(getApplicationContext(), ActivityTambah.class));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
+                return true;
+            } else if (itemId == R.id.nb_tambah) {
                 return true;
             } else if (itemId == R.id.nb_histori) {
                 startActivity(new Intent(getApplicationContext(), ActivityHistory.class));
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 return true;
             }
-                return false;
+            return false;
         });
     }
 }
