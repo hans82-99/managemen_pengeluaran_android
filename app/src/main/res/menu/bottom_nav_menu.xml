@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/nb_home"
         android:title="Home"
-        android:icon="@drawable/icon_nav_home"/>
+        android:icon="@drawable/icon_nav_home"
+        app:actionLayout="@layout/bottom_nav_item"/>
     <item
         android:id="@+id/nb_tambah"
         android:title="Tambah"
-        android:icon="@drawable/icon_nav_tambah"/>
+        android:icon="@drawable/icon_nav_tambah"
+        app:actionLayout="@layout/bottom_nav_item"/>
     <item
         android:id="@+id/nb_histori"
         android:title="Histori"
-        android:icon="@drawable/icon_nav_histori"/>
+        android:icon="@drawable/icon_nav_histori"
+        app:actionLayout="@layout/bottom_nav_item"/>
     <item
         android:id="@+id/nb_akun"
         android:title="Akun"
-        android:icon="@drawable/icon_nav_akun"/>
+        android:icon="@drawable/icon_nav_akun"
+        app:actionLayout="@layout/bottom_nav_item"/>
 </menu>
