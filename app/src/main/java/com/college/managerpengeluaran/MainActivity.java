@@ -2,6 +2,7 @@ package com.college.managerpengeluaran;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,53 +92,96 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchData() {
-        String url = "http://192.168.1.13/Expense_Manager/get_data.php?akun_id=1";
+        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=1";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            Log.d("Response", response.toString());
+
                             JSONObject account = response.getJSONObject("account");
                             namadash.setText(account.getString("account_name"));
                             totalbalancedash.setText("Rp. " + account.getDouble("initial_balance"));
 
+                            transactionList.clear(); // Clear existing data before adding new data
+
+                            double totalIncome = 0.0;
+                            double totalExpense = 0.0;
+
                             JSONArray expenses = response.getJSONArray("expenses");
                             for (int i = 0; i < expenses.length(); i++) {
                                 JSONObject expense = expenses.getJSONObject(i);
-                                Transaction transaction = new Transaction();
+                                modelekspense transaction = new modelekspense();
+                                transaction.setId(expense.getInt("expense_id"));
                                 transaction.setTitle(expense.getString("expense_title"));
+                                transaction.setQuantity(expense.getString("quantity"));
+                                transaction.setPaymentMethod(expense.getString("exp_payment_method"));
+                                transaction.setDatetime(expense.getString("datetime"));
                                 transaction.setDescription(expense.getString("description"));
                                 transaction.setDate(expense.getString("date"));
                                 transaction.setAmount(expense.getDouble("expense_amount"));
+                                transaction.setCategory(expense.getInt("expense_category_id"));
+                                transaction.setUser_id(expense.getInt("user_id"));
+                                transaction.setImageDesc(expense.getString("exp_image_desc"));
                                 transaction.setIncome(false);
                                 transactionList.add(transaction);
+
+                                totalExpense += expense.getDouble("expense_amount");
                             }
 
                             JSONArray incomes = response.getJSONArray("incomes");
                             for (int i = 0; i < incomes.length(); i++) {
                                 JSONObject income = incomes.getJSONObject(i);
-                                Transaction transaction = new Transaction();
+                                modelincome transaction = new modelincome();
+                                transaction.setId(income.getInt("income_id"));
                                 transaction.setTitle(income.getString("income_title"));
+                                transaction.setPaymentMethod(income.getString("inc_payment_method"));
+                                transaction.setDatetime(income.getString("datetime"));
                                 transaction.setDescription(income.getString("description"));
                                 transaction.setDate(income.getString("date"));
                                 transaction.setAmount(income.getDouble("income_amount"));
+                                transaction.setCategory(income.getInt("income_category_id"));
+                                transaction.setUser_id(income.getInt("user_id"));
+                                transaction.setImageDesc(income.getString("inc_image_desc"));
                                 transaction.setIncome(true);
                                 transactionList.add(transaction);
+
+                                totalIncome += income.getDouble("income_amount");
                             }
+
+                            // Ini buat income dan expense profile
+                            incomedash.setText("Rp. " + totalIncome);
+                            expensedash.setText("Rp. " + totalExpense);
+
+                            // Ini buat ngurutin data berdasarkan date terkini
+                            Collections.sort(transactionList, new Comparator<Transaction>() {
+                                @Override
+                                public int compare(Transaction t1, Transaction t2) {
+                                    int dateCompare = t2.getDate().compareTo(t1.getDate());
+                                    if (dateCompare == 0) {
+                                        return Integer.compare(t2.getId(), t1.getId()); // Jika date sama, urutkan berdasarkan id
+                                    }
+                                    return dateCompare; // Urutkan berdasarkan date
+                                }
+                            });
 
                             transactionAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e("JSONError", "JSON Parsing error: " + e.getMessage());
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                Log.e("VolleyError", "Volley error: " + error.getMessage());
             }
         });
 
         Volley.newRequestQueue(this).add(request);
     }
+
 }

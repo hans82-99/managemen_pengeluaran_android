@@ -151,6 +151,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -169,13 +172,14 @@
                 android:textColor="#F8EDE3"
                 android:text="Semua"
                 android:fontFamily="@font/inter"
-                android:layout_marginLeft="140dp"
+                android:layout_marginLeft="120dp"
                 android:background="@drawable/buttondash"/>
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/historidash"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>

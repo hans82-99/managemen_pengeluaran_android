@@ -5,7 +5,12 @@ public class Transaction {
     private String title;
     private double amount;
     private String date;
+    private String datetime;
     private String description;
+    private String imageDesc;
+    private String paymentMethod;
+    private int user_id;
+    private int category;
     private boolean isIncome; // true for income, false for expense
 
     // Getters and Setters
@@ -41,9 +46,39 @@ public class Transaction {
     public void setDate(String date) {
         this.date = date;
     }
+    public String getDatetime() {
+        return datetime;
+
+    }
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
 
     public String getDescription() {
         return description;
+    }
+
+    public String getImageDesc() {
+        return imageDesc;
+    }
+
+    public void setImageDesc(String imageDesc) {
+        this.imageDesc = imageDesc;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+    public void setCategory(int category) {
+        this.category = category;
     }
 
     public void setDescription(String description) {
@@ -56,5 +91,12 @@ public class Transaction {
 
     public void setIncome(boolean isIncome) {
         this.isIncome = isIncome;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }
