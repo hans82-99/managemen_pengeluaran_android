@@ -9,6 +9,14 @@ public class modelexpcategory {
         this.id_expense = id_expense;
     }
 
+    public modelexpcategory(int i) {
+        this.id_expense = i;
+    }
+
+    public modelexpcategory() {
+
+    }
+
     public String getExpense_category_name() {
         return expense_category_name;
     }

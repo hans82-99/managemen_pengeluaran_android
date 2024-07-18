@@ -3,29 +3,254 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@drawable/backgroundsemua"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ActivityTambah">
 
+    <!-- Header -->
     <LinearLayout
-        android:id="@+id/container"
-        android:layout_width="390dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:id="@+id/headerini"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="80dp"
+        android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintVertical_bias="1"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listview">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/intentpengeluaran"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:background="@drawable/buttondash"
+            android:fontFamily="@font/inter"
+            android:text="Pengeluaran"
+            android:textColor="#F8EDE3"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/intentpemasukan"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/buttondash"
+            android:fontFamily="@font/inter"
+            android:text="Pemasukan"
+            android:textColor="#F8EDE3"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/kartuform"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerini">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="40dp"
+            android:orientation="vertical"
+            android:background="#F8EDE3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:fontFamily="@font/inter_black"
+                android:text="PENGELUARAN"
+                android:textColor="#8D493A"
+                android:textSize="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:fontFamily="@font/inter"
+                android:text="Setiap pengeluaran pasti terdapat pemasukan"
+                android:textColor="#8D493A"
+                android:textSize="14dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#8D493A"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="13dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="12sp"
+                android:hint="Nama Pengeluaran"
+                android:textColorHint="#8D493A"
+                android:background="@drawable/foredittext"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#8D493A"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="13dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="12sp"
+                android:hint="Jumlah Pengeluaran"
+                android:textColorHint="#8D493A"
+                android:background="@drawable/foredittext"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#8D493A"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="13dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="12sp"
+                android:hint="Media Pembayaran"
+                android:textColorHint="#8D493A"
+                android:background="@drawable/foredittext"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left|center_vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+
+                <Spinner
+                    android:id="@+id/inikategori"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColorHint="#8D493A"
+                    android:background="@drawable/foredittext"/>
+
+                <Button
+                    android:id="@+id/crudkategori"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="+"
+                    android:background="@drawable/buttondash"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter"
+                    android:textSize="24sp"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#8D493A"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="13dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="12sp"
+                android:hint="Quantity"
+                android:textColorHint="#8D493A"
+                android:background="@drawable/foredittext"/>
+
+            <Button
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/buttondash"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Masukkan gambar"
+                android:textColor="#F8EDE3"
+                android:fontFamily="@font/inter"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:background="@drawable/buttondash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="40dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Buat - tetap disini"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter"
+                    android:textSize="12sp"/>
+
+                <Button
+                    android:layout_marginStart="-15dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/buttondash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="Buat"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:elevation="40.5dp"
             android:background="@drawable/backgroundbalance"
+            app:elevation="4dp"
             app:itemTextColor="@color/cardview_light_background"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>
