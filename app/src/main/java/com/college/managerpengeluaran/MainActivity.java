@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
                             transactionList.clear(); // Clear existing data before adding new data
 
-                            double totalIncome = 0.0;
-                            double totalExpense = 0.0;
+                            double totalIncome = 0.00;
+                            double totalExpense = 0.00;
 
                             JSONArray expenses = response.getJSONArray("expenses");
                             for (int i = 0; i < expenses.length(); i++) {
@@ -167,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
+                            // Potong daftar transaksi agar hanya berisi 5 item terbaru
+                            List<Transaction> limitedTransactionList = transactionList.size() > 5 ? transactionList.subList(0, 5) : transactionList;
+
+                            // Perbarui adapter dengan daftar transaksi yang sudah dipotong
+                            transactionAdapter.updateData(limitedTransactionList);
                             transactionAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();

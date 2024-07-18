@@ -41,6 +41,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return transactions.size();
     }
 
+    public void updateData(List<Transaction> limitedTransactionList) {
+        this.transactions = limitedTransactionList;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, date, amount;
 
