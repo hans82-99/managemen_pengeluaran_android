@@ -7,6 +7,171 @@
     android:layout_height="match_parent"
     tools:context=".ActivityAkun">
 
+
+    <LinearLayout
+        android:id="@+id/inibalance"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/backgroundbalance"
+        android:elevation="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="90dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/namadash"
+                android:layout_width="354dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Nama"
+                android:textColor="@color/cream"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/namadeskripsi"
+                android:layout_width="144dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Deskprisi akun"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="144dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="116dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Total Balance"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/totalbalancedash"
+                android:layout_width="187dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="140dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Rp 999.000.00"
+                android:textColor="@color/cream"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="87dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="76dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Total Income"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/incomedash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="96dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Rp. 100.000.00"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="132dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Total Expense"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/expensedash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="148dp"
+                android:fontFamily="@font/inter_medium"
+                android:text="Rp. 100.000.00"
+                android:textColor="@color/cream"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/daftarakun"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="280dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:text="Daftar Akun"
+                android:textColor="#8D493A"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/buttonTambah"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
+                android:text="TAMBAH"
+                android:textColor="#F8EDE3"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pilihakun"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="390dp"
