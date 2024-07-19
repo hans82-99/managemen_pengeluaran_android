@@ -17,6 +17,7 @@
         android:layout_marginEnd="20dp"
         app:cardCornerRadius="40dp"
         app:cardElevation="40dp"
+        app:cardBackgroundColor="#F8EDE3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,10 +27,31 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="KATEGORI"
+                android:textColor="#8D493A"
+                android:textSize="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/inter_black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pada tampilan ini anda dapat menambah, mengedit, dan menghapus kategori dalam list."
+                android:textColor="#8D493A"
+                android:textSize="12dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="-5dp"
+                android:fontFamily="@font/inter"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
@@ -68,13 +90,24 @@
                 android:id="@+id/catlistini"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
                 android:elevation="40dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="50dp">
+                android:layout_marginTop="10dp">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/balikkeinputpengeluaran"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="Kembali"
+                android:background="@drawable/buttondash"
+                android:textColor="#F8EDE3"
+                android:fontFamily="@font/inter"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 

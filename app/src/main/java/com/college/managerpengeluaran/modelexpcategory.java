@@ -17,6 +17,11 @@ public class modelexpcategory {
 
     }
 
+    public modelexpcategory(int nampungid, String valcat) {
+        this.id_expense = nampungid;
+        this.expense_category_name = valcat;
+    }
+
     public String getExpense_category_name() {
         return expense_category_name;
     }

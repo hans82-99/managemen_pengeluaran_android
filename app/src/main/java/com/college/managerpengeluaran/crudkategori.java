@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class crudkategori extends AppCompatActivity {
-    Button addtocatdb;
+    Button addtocatdb, balikkeinputpengeluaran;
     EditText valuecategory;
     private List<modelexpcategory> catlist;
     private RecyclerView catlistini;
@@ -54,11 +54,21 @@ public class crudkategori extends AppCompatActivity {
 
         addtocatdb = findViewById(R.id.addtocatdb);
         valuecategory = findViewById(R.id.valuecategory);
+        balikkeinputpengeluaran = findViewById(R.id.balikkeinputpengeluaran);
+
         catlist = new ArrayList<>();
         expcatAdapter = new expcatAdapter(catlist, this);
         catlistini = findViewById(R.id.catlistini);
         catlistini.setLayoutManager(new LinearLayoutManager(this));
         catlistini.setAdapter(expcatAdapter);
+
+        balikkeinputpengeluaran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent balikcuy = new Intent(crudkategori.this, ActivityTambah.class);
+                startActivity(balikcuy);
+            }
+        });
 
         new ngambilkategori().execute("http://10.0.2.2:80/Expense_Manager/getcatdb.php");
 
