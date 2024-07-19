@@ -1,11 +1,17 @@
 package com.college.managerpengeluaran;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,14 +21,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnItemClickListener {
 
@@ -41,6 +53,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         namadash = findViewById(R.id.namadash);
         namadeskripsi = findViewById(R.id.namadeskripsi);
         totalbalancedash = findViewById(R.id.totalbalancedash);
+        buttonTambah = findViewById(R.id.buttonTambah);
 
         recyclerView = findViewById(R.id.pilihakun);
         recyclerView.setHasFixedSize(true);
@@ -52,14 +65,19 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         recyclerView.setAdapter(akunAdapter);
 
         // tambah akun coi
-        buttonTambah = findViewById(R.id.buttonTambah);
-        buttonTambah.setOnClickListener(v -> TambahAkun());
-        fetchAkundata();
+        buttonTambah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TampilTambahAkun();
+            }
+        });
+
+        fetchAkundata();///<< methode tampil list akun
 
         //cobain tambah
         incomeTextView = findViewById(R.id.totalIncome);
         expenseTextView = findViewById(R.id.totalExpense);
-        totalduit();
+        totalduit(); /// << method tampil total expense (betak dari mainActivity tio)
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -160,15 +178,79 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
 
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position) { // click di item recycleview << might delete later ehe
         Account clickedAccount = accountList.get(position);
         namadash.setText(clickedAccount.getAccountName());
         namadeskripsi.setText(clickedAccount.getDescription());
         totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());
     }
 
-    private void TambahAkun() {
-        Intent intent = new Intent(ActivityAkun.this, AddAccountActivity.class);
-        startActivity(intent);
+    //cobain tambahhh pakai alert dialog
+    private void TampilTambahAkun() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tambah Akun");
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_tambah_akun, null, false);
+        final EditText inputName = viewInflated.findViewById(R.id.input_account_name);
+        final EditText inputDescription = viewInflated.findViewById(R.id.input_description);
+        final EditText inputBalance = viewInflated.findViewById(R.id.input_initial_balance);
+
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                String accountName = inputName.getText().toString();
+                String description = inputDescription.getText().toString();
+                double initialBalance = Double.parseDouble(inputBalance.getText().toString());
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+                TambahAkunKedb(accountName, description, initialBalance, currentDate);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void TambahAkunKedb(final String accountName, final String description, final double initialBalance, final String date) {
+        String url = "http://10.0.2.2:80/Expense_Manager/add_account.php";
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(ActivityAkun.this, "Akun Berhasil Ditambahkan", Toast.LENGTH_SHORT).show();
+                        fetchAkundata(); // Refresh List nya setelah tambah <<<
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error Tambah Akun", error.toString());
+                        Toast.makeText(ActivityAkun.this, "Error Menambah Akun", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() { //https://www.w3schools.com/java/java_hashmap.asp
+                Map<String, String> params = new HashMap<>();
+                params.put("account_name", accountName);
+                params.put("description", description);
+                params.put("initial_balance", String.valueOf(initialBalance));
+                params.put("date", date);
+                return params;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(postRequest);
     }
 }
