@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/input_account_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Akun"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/input_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deskripsi"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/input_initial_balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Saldo Awal"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
