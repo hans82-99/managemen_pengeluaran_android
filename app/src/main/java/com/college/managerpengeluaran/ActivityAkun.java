@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,7 +133,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
                             int accountId = accountObject.getInt("account_id");
                             String accountName = accountObject.getString("account_name");
                             String description = accountObject.getString("description");
-                            double initialBalance = accountObject.getDouble("initial_balance");
+                            BigDecimal initialBalance = BigDecimal.valueOf(accountObject.getInt("initial_balance"));
                             Account account = new Account(accountId, accountName, description, initialBalance);
                             accountList.add(account);
                         }
@@ -187,7 +188,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         int accountId = clickedAccount.getAccountId();
         String accountName = clickedAccount.getAccountName();
         String description = clickedAccount.getDescription();
-        double initialBalance = clickedAccount.getInitialBalance();
+        BigDecimal initialBalance = clickedAccount.getInitialBalance();
         String date = clickedAccount.getDate();
 
         modelakun masukini = new modelakun(accountId, accountName, description, String.valueOf(initialBalance), date);

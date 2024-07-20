@@ -3,35 +3,82 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/buatdialogakun"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/inter_black"
+        android:text="EDIT AKUN"
+        android:textAlignment="center"
+        android:textColor="#8D493A"
+        android:textSize="20dp" />
 
     <EditText
         android:id="@+id/input_account_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nama Akun"
-        android:inputType="text" />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="13dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/foredittext"
+        android:hint="Masukan Nama Akun" />
 
     <EditText
         android:id="@+id/input_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Deskripsi"
-        android:inputType="text" />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="13dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/foredittext"
+        android:hint="Masukan Deskripsi Akun" />
 
     <EditText
         android:id="@+id/input_initial_balance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Saldo Awal"
-        android:inputType="numberDecimal" />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="13dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="16sp"
+        android:background="@drawable/foredittext"
+        android:hint="Masukan Jumlah Uang"
+        android:inputType="numberDecimal"/>
 
     <Button
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Simpan"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp" />
+        android:text="Simpan Edit"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textColor="@color/cream"
+        android:fontFamily="@font/inter"
+        android:background="@drawable/buttondash"
+        android:elevation="40dp"/>
 
 </LinearLayout>

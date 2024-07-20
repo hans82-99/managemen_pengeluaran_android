@@ -1,13 +1,15 @@
 package com.college.managerpengeluaran;
 
+import java.math.BigDecimal;
+
 public class Account {
     private int accountId;
     private String accountName;
     private String description;
-    private double initialBalance;
+    private BigDecimal initialBalance;
     private String date;
 
-    public Account(int accountId, String accountName, String description, double initialBalance) {
+    public Account(int accountId, String accountName, String description, BigDecimal initialBalance) {
         this.accountId = accountId;
         this.accountName = accountName;
         this.description = description;
@@ -15,8 +17,10 @@ public class Account {
     }
 
     public boolean isEmpty() {
-        return this.accountId == 0 && (this.accountName == null || this.accountName.isEmpty()) &&
-                this.initialBalance == 0.0 && (this.description == null || this.description.isEmpty());
+        return accountId == 0
+                && (accountName == null || accountName.isEmpty())
+                && (description == null || description.isEmpty())
+                && initialBalance.compareTo(BigDecimal.ZERO) == 0; // Use BigDecimal.ZERO for comparison
     }
 
     public Account() {
@@ -55,11 +59,11 @@ public class Account {
         this.description = description;
     }
 
-    public double getInitialBalance() {
+    public BigDecimal getInitialBalance() {
         return initialBalance;
     }
 
-    public void setInitialBalance(double initialBalance) {
+    public void setInitialBalance(BigDecimal initialBalance) {
         this.initialBalance = initialBalance;
     }
 }

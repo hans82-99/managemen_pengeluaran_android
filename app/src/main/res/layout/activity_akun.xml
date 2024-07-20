@@ -15,9 +15,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        android:background="@drawable/backgroundbalance"
+        android:layout_marginTop="32dp"
+        android:background="@color/coklat"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,17 +26,16 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-
-            android:padding="16dp">
+            android:background="@color/coklat"
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/namadash"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_medium"
+                android:fontFamily="@font/poppins_bold"
                 android:text="Nama"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
                 android:text="Deskripsi akun"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/inter_medium"
                 android:text="Total Balance"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/namadeskripsi" />
@@ -70,9 +70,9 @@
                 android:id="@+id/totalbalancedash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_medium"
+                android:fontFamily="@font/inter_semibold"
                 android:text="Rp 999.000.00"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/totalBalanceLabel" />
@@ -84,7 +84,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/inter_medium"
                 android:text="Total Income"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/namadash" />
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
                 android:text="Rp. 100.000.00"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/totalIncomeLabel" />
@@ -107,7 +107,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/inter_medium"
                 android:text="Total Expense"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/totalIncome" />
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
                 android:text="Rp. 100.000.00"
-                android:textColor="@color/black"
+                android:textColor="@color/cream"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/totalExpenseLabel" />
@@ -149,9 +149,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="Daftar Akun"
-                android:textColor="@color/black"
+                android:textColor="@color/coklat"
                 android:textSize="14sp" />
 
             <Button
@@ -178,7 +178,9 @@
         android:id="@+id/container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -188,9 +190,8 @@
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:elevation="40.5dp"
             android:background="@drawable/backgroundbalance"
+            app:elevation="4dp"
             app:itemTextColor="@color/cardview_light_background"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>

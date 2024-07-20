@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/backgroundsemua"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backgroundsemua"
     tools:context=".ActivityTambah">
 
     <!-- Header -->
     <LinearLayout
         android:id="@+id/headerini"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginTop="80dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -43,6 +44,7 @@
 
     </LinearLayout>
 
+    <!-- Form Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/kartuform"
         android:layout_width="0dp"
@@ -59,8 +61,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="40dp"
-            app:cardElevation="40dp"
             android:orientation="vertical"
             android:background="#F8EDE3">
 
@@ -90,132 +90,132 @@
                 android:id="@+id/namapengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#8D493A"
                 android:layout_marginTop="40dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/foredittext"
+                android:hint="Nama Pengeluaran"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textSize="12sp"
-                android:hint="Nama Pengeluaran"
+                android:textColor="#8D493A"
                 android:textColorHint="#8D493A"
-                android:background="@drawable/foredittext"/>
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/jumlahpengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#8D493A"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/foredittext"
+                android:hint="Jumlah Pengeluaran"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textSize="12sp"
-                android:hint="Jumlah Pengeluaran"
+                android:textColor="#8D493A"
                 android:textColorHint="#8D493A"
-                android:background="@drawable/foredittext"/>
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/deskripsipengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#8D493A"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/foredittext1"
+                android:hint="Deskripsi Pengeluaran"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textSize="12sp"
-                android:hint="Deskripsi Pengeluaran"
+                android:textColor="#8D493A"
                 android:textColorHint="#8D493A"
-                android:background="@drawable/foredittext1"/>
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/mediapembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#8D493A"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/foredittext"
+                android:hint="Media Pembayaran"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textSize="12sp"
-                android:hint="Media Pembayaran"
+                android:textColor="#8D493A"
                 android:textColorHint="#8D493A"
-                android:background="@drawable/foredittext"/>
+                android:textSize="12sp" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="left|center_vertical"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="20dp"
+                android:gravity="left|center_vertical"
+                android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/inikategori"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:textColorHint="#8D493A"
-                    android:background="@drawable/foredittext"/>
+                    android:background="@drawable/foredittext"
+                    android:textColorHint="#8D493A" />
 
                 <Button
                     android:id="@+id/crudkategori"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
+                    android:background="@drawable/buttondash"
+                    android:fontFamily="@font/inter"
                     android:paddingBottom="5dp"
                     android:text="+"
-                    android:background="@drawable/buttondash"
                     android:textColor="#F8EDE3"
-                    android:fontFamily="@font/inter"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="left|center_vertical"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="20dp"
+                android:gravity="left|center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/hasiltanggal"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:textColor="#8D493A"
-                    android:textSize="12sp"
-                    android:text="Tanggal"
                     android:background="@drawable/foredittext"
                     android:paddingTop="10dp"
                     android:paddingBottom="13dp"
-                    android:paddingHorizontal="20dp"/>
+                    android:paddingHorizontal="20dp"
+                    android:text="Tanggal"
+                    android:textColor="#8D493A"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/tambahtanggal"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
+                    android:background="@drawable/buttondash"
+                    android:fontFamily="@font/inter"
                     android:paddingBottom="5dp"
                     android:text="+"
-                    android:background="@drawable/buttondash"
                     android:textColor="#F8EDE3"
-                    android:fontFamily="@font/inter"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -223,93 +223,84 @@
                 android:id="@+id/quantitypengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#8D493A"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:background="@drawable/foredittext"
+                android:hint="Quantity"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textSize="12sp"
-                android:hint="Quantity"
+                android:textColor="#8D493A"
                 android:textColorHint="#8D493A"
-                android:background="@drawable/foredittext"/>
+                android:textSize="12sp" />
 
             <Button
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/buttondash"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
                 android:text="Masukkan gambar"
                 android:textColor="#F8EDE3"
-                android:fontFamily="@font/inter"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/buatstay"
-                    android:background="@drawable/buttondash"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/buttondash"
+                    android:fontFamily="@font/inter"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="Buat - tetap disini"
                     android:textColor="#F8EDE3"
-                    android:fontFamily="@font/inter"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/buatkedashboard"
-                    android:layout_marginStart="-15dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="40dp"
-                    android:background="@drawable/buttondash"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginStart="-15dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/buttondash"
+                    android:fontFamily="@font/inter"
                     android:text="Buat"
                     android:textColor="#F8EDE3"
-                    android:fontFamily="@font/inter"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/container"
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:gravity="center"
+        android:background="@drawable/backgroundbalance"
+        app:elevation="4dp"
+        app:itemTextColor="@color/cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/backgroundbalance"
-            app:elevation="4dp"
-            app:itemTextColor="@color/cardview_light_background"
-            app:menu="@menu/bottom_nav_menu" />
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
