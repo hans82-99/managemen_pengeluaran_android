@@ -76,14 +76,26 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         expenseTextView = findViewById(R.id.totalExpense);
         totalbalancedash = findViewById(R.id.totalbalancedash);
 
-        DatabaseHelper inidb = DatabaseHelper.getDB(this);
-        takeakun = inidb.AssistAkun().getAkun();
-        namadash.setText(takeakun.get(0).getAccount_name());
-        namadeskripsi.setText(takeakun.get(0).getDescription());
-        totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
+        DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
+        takeakun = (List<modelakun>) dbHelper.AssistAkun().getAkun();
+
+        if (takeakun.isEmpty()) {
+            Toast.makeText(this, "Silahkan pilih atau buat akun terlebih dahulu!", Toast.LENGTH_SHORT).show();
+        } else {
+            namadash.setText(takeakun.get(0).getAccount_name());
+            namadeskripsi.setText(takeakun.get(0).getDescription());
+            totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
+            //fetchAkundata();///<< methode tampil list akun\
+            totalduit();/// << method tampil total expense (betak dari mainActivity tio)
+        }
+
+        //takeakun = inidb.AssistAkun().getAkun();
+        //namadash.setText(takeakun.get(0).getAccount_name());
+        //namadeskripsi.setText(takeakun.get(0).getDescription());
+        //totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
 
         fetchAkundata();///<< methode tampil list akun
-        totalduit();/// << method tampil total expense (betak dari mainActivity tio)
+        //totalduit();/// << method tampil total expense (betak dari mainActivity tio)
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -139,7 +151,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void totalduit() {
-        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=1";
+        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
