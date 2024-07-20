@@ -87,6 +87,7 @@
                 android:textSize="14dp" />
 
             <EditText
+                android:id="@+id/namapengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#8D493A"
@@ -103,6 +104,7 @@
                 android:background="@drawable/foredittext"/>
 
             <EditText
+                android:id="@+id/jumlahpengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#8D493A"
@@ -119,6 +121,24 @@
                 android:background="@drawable/foredittext"/>
 
             <EditText
+                android:id="@+id/deskripsipengeluaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#8D493A"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="13dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textSize="12sp"
+                android:hint="Deskripsi Pengeluaran"
+                android:textColorHint="#8D493A"
+                android:background="@drawable/foredittext1"/>
+
+            <EditText
+                android:id="@+id/mediapembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#8D493A"
@@ -147,7 +167,6 @@
                     android:id="@+id/inikategori"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:textColorHint="#8D493A"
                     android:background="@drawable/foredittext"/>
 
@@ -165,7 +184,43 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left|center_vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+
+                <TextView
+                    android:id="@+id/hasiltanggal"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="#8D493A"
+                    android:textSize="12sp"
+                    android:text="Tanggal"
+                    android:background="@drawable/foredittext"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="13dp"
+                    android:paddingHorizontal="20dp"/>
+
+                <Button
+                    android:id="@+id/tambahtanggal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="+"
+                    android:background="@drawable/buttondash"
+                    android:textColor="#F8EDE3"
+                    android:fontFamily="@font/inter"
+                    android:textSize="24sp"/>
+
+            </LinearLayout>
+
             <EditText
+                android:id="@+id/quantitypengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#8D493A"
@@ -200,6 +255,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/buatstay"
                     android:background="@drawable/buttondash"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
@@ -215,6 +271,7 @@
                     android:textSize="12sp"/>
 
                 <Button
+                    android:id="@+id/buatkedashboard"
                     android:layout_marginStart="-15dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginTop="30dp"

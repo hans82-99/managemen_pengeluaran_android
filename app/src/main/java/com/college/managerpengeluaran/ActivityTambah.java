@@ -1,12 +1,18 @@
 package com.college.managerpengeluaran;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,12 +33,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ActivityTambah extends AppCompatActivity {
-    Button crudkategori, intentpengeluaran, intentpemasukan;
+    EditText namapengeluaran, jumlahpengeluaran, mediapembayaran, quantitypengeluaran, deskripsipengeluaran;
+    TextView hasiltanggal;
+    Button crudkategori, intentpengeluaran, intentpemasukan, tambahtanggal, buatkedashboard, buatstay;
     private ArrayList<modelexpcategory> categoryList;
     private ArrayAdapter<modelexpcategory> adapter;
+    private int selectedCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +67,49 @@ public class ActivityTambah extends AppCompatActivity {
         crudkategori = findViewById(R.id.crudkategori);
         intentpengeluaran = findViewById(R.id.intentpengeluaran);
         intentpemasukan = findViewById(R.id.intentpemasukan);
+        namapengeluaran = findViewById(R.id.namapengeluaran);
+        jumlahpengeluaran = findViewById(R.id.jumlahpengeluaran);
+        mediapembayaran = findViewById(R.id.mediapembayaran);
+        quantitypengeluaran = findViewById(R.id.quantitypengeluaran);
+        tambahtanggal = findViewById(R.id.tambahtanggal);
+        hasiltanggal = findViewById(R.id.hasiltanggal);
+        buatkedashboard = findViewById(R.id.buatkedashboard);
+        buatstay = findViewById(R.id.buatstay);
+        deskripsipengeluaran = findViewById(R.id.deskripsipengeluaran);
+
+        LocalDateTime waktu = LocalDateTime.now();
+        DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatjam = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String tampilwaktu = waktu.format(formatwaktu);
+        String tampiljam = waktu.format(formatjam);
+        String tanggal = tampilwaktu.toString();
+
+        hasiltanggal.setText(tanggal);
+        tambahtanggal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar kalender = Calendar.getInstance();
+                int tahun = kalender.get(Calendar.YEAR);
+                int bulan = kalender.get(Calendar.MONTH);
+                int hari = kalender.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog ambildate = new DatePickerDialog(
+                        ActivityTambah.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
+                                String date = String.format("%d-%02d-%02d", tahun, bulan + 1, hari);
+                                hasiltanggal.setText(date);
+                            }
+                        },
+                        tahun, bulan, hari
+                );
+                ambildate.show();
+            }
+        });
+
+        Account account = new Account();
+        System.out.println(account.getAccountId());
 
         crudkategori.setOnClickListener(v -> startActivity
                 (new Intent(getApplicationContext(), crudkategori.class))
@@ -67,13 +128,32 @@ public class ActivityTambah extends AppCompatActivity {
 
         fetchCategories();
 
-        //spinner
-        /*
-        Spinner spinner = findViewById(R.id.inikategori);
-        ArrayList<modelexpcategory> adapter = new ArrayList<>(this, R.array.kategori_array, R.layout.spinnerkategori);
-        adapter.setDropDownViewResource(R.layout.spinnerkategori);
-        spinner.setAdapter(adapter);
-         */
+        buatkedashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (namapengeluaran.getText().toString().isEmpty() ||
+                        jumlahpengeluaran.getText().toString().isEmpty() ||
+                        mediapembayaran.getText().toString().isEmpty() ||
+                        quantitypengeluaran.getText().toString().isEmpty() ||
+                        deskripsipengeluaran.getText().toString().isEmpty() ||
+                        hasiltanggal.getText().toString().isEmpty()) {
+                    Toast.makeText(ActivityTambah.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                } else {
+                    new inputexpense().execute(
+                            namapengeluaran.getText().toString(),
+                            jumlahpengeluaran.getText().toString(),
+                            mediapembayaran.getText().toString(),
+                            quantitypengeluaran.getText().toString(),
+                            deskripsipengeluaran.getText().toString(),
+                            hasiltanggal.getText().toString(),
+                            String.valueOf(account.getAccountId()),
+                            String.valueOf(selectedCategoryId)
+                    );
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -103,6 +183,7 @@ public class ActivityTambah extends AppCompatActivity {
         });
     }
 
+    // Spinner
     private void fetchCategories() {
         String url = "http://10.0.2.2:80/Expense_Manager/getcatdb.php";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -143,6 +224,7 @@ public class ActivityTambah extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 modelexpcategory selectedCategory = (modelexpcategory) parent.getItemAtPosition(position);
+                selectedCategoryId = selectedCategory.getId_expense();
                 //Toast.makeText(ActivityTambah.this, "Selected: " + selectedCategory.getExpense_category_name(), Toast.LENGTH_SHORT).show();
             }
 
@@ -153,4 +235,70 @@ public class ActivityTambah extends AppCompatActivity {
         });
     }
 
+    private class inputexpense extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... arg0) {
+            String expense_title = arg0[0];
+            String expense_amount = arg0[1];
+            String exp_payment_method = arg0[2];
+            String quantity = arg0[3];
+            String description = arg0[4];
+            String date = arg0[5];
+            String user_id = arg0[6];
+            String expense_category_id = arg0[7];
+
+            String exp_image_desc = "NULL";
+            //String datetime = arg0[9];
+
+            LocalDateTime waktu = LocalDateTime.now();
+            DateTimeFormatter formatjam = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String tampiljam = waktu.format(formatjam);
+
+            String hasil = "";
+            HttpURLConnection conn = null;
+
+            try {
+                URL url = new URL("http://10.0.2.2:80/Expense_Manager/simpanexpense.php");
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                String data = URLEncoder.encode("expense_title", "UTF-8") + "=" + URLEncoder.encode(expense_title, "UTF-8");
+                data += "&" + URLEncoder.encode("expense_amount", "UTF-8") + "=" + URLEncoder.encode(expense_amount, "UTF-8");
+                data += "&" + URLEncoder.encode("exp_payment_method", "UTF-8") + "=" + URLEncoder.encode(exp_payment_method, "UTF-8");
+                data += "&" + URLEncoder.encode("quantity", "UTF-8") + "=" + URLEncoder.encode(quantity, "UTF-8");
+                data += "&" + URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8");
+                data += "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8");
+                data += "&" + URLEncoder.encode("datetime", "UTF-8") + "=" + URLEncoder.encode(tampiljam, "UTF-8");
+                data += "&" + URLEncoder.encode("exp_image_desc", "UTF-8") + "=" + URLEncoder.encode(exp_image_desc, "UTF-8");
+                data += "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(user_id, "UTF-8");
+                data += "&" + URLEncoder.encode("expense_category_id", "UTF-8") + "=" + URLEncoder.encode(expense_category_id, "UTF-8");
+
+                OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder("");
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                    break;
+                }
+                hasil = sb.toString();
+                return hasil;
+
+            } catch (Exception e) {
+                Log.e("ActivityTambah", "Exception: " + e.getMessage(), e);
+                return "Exception: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("insisActivity", "Result: " + result);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.college.managerpengeluaran;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     private List<Account> accountList;
     private TextView namadash, namadeskripsi, totalbalancedash, incomeTextView, expenseTextView;
     private Button buttonTambah;
+    private Context context;
+    private List<modelakun> takeakun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,12 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         incomeTextView = findViewById(R.id.totalIncome);
         expenseTextView = findViewById(R.id.totalExpense);
         totalbalancedash = findViewById(R.id.totalbalancedash);
+
+        DatabaseHelper inidb = DatabaseHelper.getDB(this);
+        takeakun = inidb.AssistAkun().getAkun();
+        namadash.setText(takeakun.get(0).getAccount_name());
+        namadeskripsi.setText(takeakun.get(0).getDescription());
+        totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
 
         fetchAkundata();///<< methode tampil list akun
         totalduit();/// << method tampil total expense (betak dari mainActivity tio)
@@ -161,6 +170,19 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     @Override
     public void onItemClick(int position) {
         Account clickedAccount = accountList.get(position);
+
+        DatabaseHelper inidb = DatabaseHelper.getDB(this);
+        int accountId = clickedAccount.getAccountId();
+        String accountName = clickedAccount.getAccountName();
+        String description = clickedAccount.getDescription();
+        double initialBalance = clickedAccount.getInitialBalance();
+        String date = clickedAccount.getDate();
+
+        modelakun masukini = new modelakun(accountId, accountName, description, String.valueOf(initialBalance), date);
+
+        inidb.AssistAkun().deleteAll();
+        inidb.AssistAkun().addto(masukini);
+
         namadash.setText(clickedAccount.getAccountName());
         namadeskripsi.setText(clickedAccount.getDescription());
         totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());

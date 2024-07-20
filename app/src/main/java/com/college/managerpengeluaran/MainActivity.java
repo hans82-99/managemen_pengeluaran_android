@@ -1,5 +1,6 @@
 package com.college.managerpengeluaran;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView historidash;
     private TransactionAdapter transactionAdapter;
     private List<Transaction> transactionList;
+    private List<modelakun> takeakun;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +59,21 @@ public class MainActivity extends AppCompatActivity {
         expensedash = findViewById(R.id.expensedash);
         historidash = findViewById(R.id.historidash);
 
+        DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
+        takeakun = (List<modelakun>) dbHelper.AssistAkun().getAkun();
+
+        if (takeakun.isEmpty()) {
+            Toast.makeText(this, "Silahkan pilih atau buat akun terlebih dahulu!", Toast.LENGTH_SHORT).show();
+        } else {
+            namadash.setText(takeakun.get(0).getAccount_name());
+            totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance());
+            fetchData();
+        }
+
         transactionList = new ArrayList<>();
         transactionAdapter = new TransactionAdapter(transactionList, this);
         historidash.setLayoutManager(new LinearLayoutManager(this));
         historidash.setAdapter(transactionAdapter);
-
-        fetchData();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nb_home);
@@ -91,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchData() {
-        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=1";
+        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -100,9 +112,19 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             Log.d("Response", response.toString());
 
+                            /*
                             JSONObject account = response.getJSONObject("account");
-                            namadash.setText(account.getString("account_name"));
-                            totalbalancedash.setText("Rp. " + account.getDouble("initial_balance"));
+                            Account accountData = new Account();
+                            if (accountData.isEmpty()) {
+                                accountData.setAccountId(account.getInt("account_id"));
+                                accountData.setAccountName(account.getString("account_name"));
+                                accountData.setInitialBalance(account.getDouble("initial_balance"));
+                                accountData.setDescription(account.getString("description"));
+                                namadash.setText(account.getString("account_name"));
+                                totalbalancedash.setText("Rp. " + account.getDouble("initial_balance"));
+                                System.out.println(accountData.getAccountId());
+                            }
+                             */
 
                             transactionList.clear(); // Clear existing data before adding new data
 
