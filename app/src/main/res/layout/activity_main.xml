@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
+            android:layout_marginTop="-10dp"
             android:text="Manajemen adalah hal yang bagus"
             android:textColor="#8D493A"
             android:textSize="12sp" />
@@ -60,6 +61,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="Total Balance"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:textColor="#F8EDE3" />
 
         <TextView
@@ -68,6 +71,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
             android:gravity="end"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:text="Rp. 800.000.000,00"
             android:textColor="#F8EDE3"
             android:textSize="25sp" />
@@ -76,6 +81,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -99,6 +106,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:orientation="horizontal">
 
             <TextView

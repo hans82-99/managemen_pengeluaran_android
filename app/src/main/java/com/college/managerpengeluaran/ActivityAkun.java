@@ -1,5 +1,6 @@
 package com.college.managerpengeluaran;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -86,17 +87,10 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
             namadash.setText(takeakun.get(0).getAccount_name());
             namadeskripsi.setText(takeakun.get(0).getDescription());
             totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
-            //fetchAkundata();///<< methode tampil list akun\
             totalduit();/// << method tampil total expense (betak dari mainActivity tio)
         }
 
-        //takeakun = inidb.AssistAkun().getAkun();
-        //namadash.setText(takeakun.get(0).getAccount_name());
-        //namadeskripsi.setText(takeakun.get(0).getDescription());
-        //totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
-
         fetchAkundata();///<< methode tampil list akun
-        //totalduit();/// << method tampil total expense (betak dari mainActivity tio)
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

@@ -1,6 +1,7 @@
 package com.college.managerpengeluaran;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -63,10 +65,26 @@ public class MainActivity extends AppCompatActivity {
         takeakun = (List<modelakun>) dbHelper.AssistAkun().getAkun();
 
         if (takeakun.isEmpty()) {
-            Toast.makeText(this, "Silahkan pilih atau buat akun terlebih dahulu!", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("Akun Tidak Tersedia!");
+            alertDialog.setMessage("Silahkan buat atau pilih akun terlebih dahulu pada halaman akun!");
+            alertDialog.setPositiveButton("Beralih Akun", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent keakun = new Intent(getApplicationContext(), ActivityAkun.class);
+                }
+            });
+            alertDialog.setNegativeButton("Nanti Saja", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alertDialog.show();
+            //Toast.makeText(this, "Silahkan pilih atau buat akun terlebih dahulu!", Toast.LENGTH_SHORT).show();
         } else {
             namadash.setText(takeakun.get(0).getAccount_name());
-            totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance());
+            totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
             fetchData();
         }
 

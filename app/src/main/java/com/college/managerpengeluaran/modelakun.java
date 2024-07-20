@@ -42,6 +42,14 @@ public class modelakun {
         this.date = date;
     }
 
+    public modelakun(String tampungid, String tampungname, String tampungdesc, String initialBalance, String tampungdate) {
+        this.account_id = Integer.parseInt(tampungid);
+        this.account_name = tampungname;
+        this.description = tampungdesc;
+        this.initial_balance = initialBalance;
+        this.date = tampungdate;
+    }
+
     public int getAccount_id() {
         return account_id;
     }

@@ -1,6 +1,7 @@
 package com.college.managerpengeluaran;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ActivityTambah extends AppCompatActivity {
     EditText namapengeluaran, jumlahpengeluaran, mediapembayaran, quantitypengeluaran, deskripsipengeluaran;
@@ -51,6 +53,8 @@ public class ActivityTambah extends AppCompatActivity {
     private ArrayList<modelexpcategory> categoryList;
     private ArrayAdapter<modelexpcategory> adapter;
     private int selectedCategoryId;
+    private List<modelakun> takeakun;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +112,10 @@ public class ActivityTambah extends AppCompatActivity {
             }
         });
 
-        Account account = new Account();
-        System.out.println(account.getAccountId());
+        //Account account = new Account();
+        DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
+        takeakun = dbHelper.AssistAkun().getAkun();
+        System.out.println(takeakun.get(0).getAccount_id());
 
         crudkategori.setOnClickListener(v -> startActivity
                 (new Intent(getApplicationContext(), crudkategori.class))
@@ -145,12 +151,38 @@ public class ActivityTambah extends AppCompatActivity {
                             mediapembayaran.getText().toString(),
                             quantitypengeluaran.getText().toString(),
                             deskripsipengeluaran.getText().toString(),
-                            hasiltanggal.getText().toString(),
-                            String.valueOf(account.getAccountId()),
-                            String.valueOf(selectedCategoryId)
+                            hasiltanggal.getText().toString()
+                            //String.valueOf(account.getAccountId()),
+                            //String.valueOf(selectedCategoryId)
                     );
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                }
+            }
+        });
+
+        buatstay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (namapengeluaran.getText().toString().isEmpty() ||
+                        jumlahpengeluaran.getText().toString().isEmpty() ||
+                        mediapembayaran.getText().toString().isEmpty() ||
+                        quantitypengeluaran.getText().toString().isEmpty() ||
+                        deskripsipengeluaran.getText().toString().isEmpty() ||
+                        hasiltanggal.getText().toString().isEmpty()) {
+                    Toast.makeText(ActivityTambah.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                } else {
+                    new inputexpense().execute(
+                            namapengeluaran.getText().toString(),
+                            jumlahpengeluaran.getText().toString(),
+                            mediapembayaran.getText().toString(),
+                            quantitypengeluaran.getText().toString(),
+                            deskripsipengeluaran.getText().toString(),
+                            hasiltanggal.getText().toString()
+                            //String.valueOf(account.getAccountId()),
+                            //String.valueOf(selectedCategoryId)
+                    );
+                    Toast.makeText(ActivityTambah.this, "Berhasil menambahkan pengeluaran", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -235,7 +267,7 @@ public class ActivityTambah extends AppCompatActivity {
         });
     }
 
-    private class inputexpense extends AsyncTask<String, Void, String> {
+    class inputexpense extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... arg0) {
             String expense_title = arg0[0];
@@ -244,10 +276,12 @@ public class ActivityTambah extends AppCompatActivity {
             String quantity = arg0[3];
             String description = arg0[4];
             String date = arg0[5];
-            String user_id = arg0[6];
-            String expense_category_id = arg0[7];
+            //String user_id = arg0[6];
+            //String expense_category_id = arg0[7];
 
             String exp_image_desc = "NULL";
+            String user_id = String.valueOf(takeakun.get(0).getAccount_id());
+            String expense_category_id = String.valueOf(selectedCategoryId);
             //String datetime = arg0[9];
 
             LocalDateTime waktu = LocalDateTime.now();
@@ -299,6 +333,27 @@ public class ActivityTambah extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("insisActivity", "Result: " + result);
+            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) - Double.parseDouble(jumlahpengeluaran.getText().toString());
+            String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
+            String tampungname = takeakun.get(0).getAccount_name();
+            String tampungdesc = takeakun.get(0).getDescription();
+            String tampungdate = hasiltanggal.getText().toString();
+
+            DatabaseHelper dbHelper = DatabaseHelper.getDB(ActivityTambah.this);
+            dbHelper.AssistAkun().deleteAll();
+            modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+            dbHelper.AssistAkun().addto(masukini);
+
+            new crudforbalance(ActivityTambah.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+
+            namapengeluaran.setText("");
+            jumlahpengeluaran.setText("");
+            mediapembayaran.setText("");
+            quantitypengeluaran.setText("");
+            deskripsipengeluaran.setText("");
+            hasiltanggal.setText("");
         }
     }
+
+
 }
