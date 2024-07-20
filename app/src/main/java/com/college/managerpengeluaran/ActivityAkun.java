@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
@@ -44,7 +46,6 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     private TextView namadash, namadeskripsi, totalbalancedash, incomeTextView, expenseTextView;
     private Button buttonTambah;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,29 +61,24 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         accountList = new ArrayList<>();
-        akunAdapter = new AkunAdapter(accountList, this);
-
+        akunAdapter = new AkunAdapter(this, accountList);
+        akunAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(akunAdapter);
 
-        // tambah akun coi
-        buttonTambah.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TampilTambahAkun();
-            }
-        });
+        buttonTambah.setOnClickListener(v -> TampilTambahAkun());
 
-        fetchAkundata();///<< methode tampil list akun
-
+        // Inisialisasi TextView di onCreate()
         //cobain tambah
         incomeTextView = findViewById(R.id.totalIncome);
         expenseTextView = findViewById(R.id.totalExpense);
-        totalduit(); /// << method tampil total expense (betak dari mainActivity tio)
+        totalbalancedash = findViewById(R.id.totalbalancedash);
+
+        fetchAkundata();///<< methode tampil list akun
+        totalduit();/// << method tampil total expense (betak dari mainActivity tio)
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nb_akun);
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nb_home) {
@@ -102,52 +98,37 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
                 return true;
             } else return itemId == R.id.nb_akun;
         });
-
     }
 
     private void fetchAkundata() {
         String url = "http://10.0.2.2:80/Expense_Manager/fetch_accounts.php";
-
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            accountList.clear();
-
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject accountObject = response.getJSONObject(i);
-
-                                int accountId = accountObject.getInt("account_id");
-                                String accountName = accountObject.getString("account_name");
-                                String description = accountObject.getString("description");
-                                double initialBalance = accountObject.getDouble("initial_balance");
-
-                                Account account = new Account(accountId, accountName, description, initialBalance);
-                                accountList.add(account);
-                            }
-
-                            akunAdapter.notifyDataSetChanged();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(ActivityAkun.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                response -> {
+                    try {
+                        accountList.clear();
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject accountObject = response.getJSONObject(i);
+                            int accountId = accountObject.getInt("account_id");
+                            String accountName = accountObject.getString("account_name");
+                            String description = accountObject.getString("description");
+                            double initialBalance = accountObject.getDouble("initial_balance");
+                            Account account = new Account(accountId, accountName, description, initialBalance);
+                            accountList.add(account);
                         }
+                        akunAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ActivityAkun.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Fetch Accounts Error", error.toString());
-                        Toast.makeText(ActivityAkun.this, "Error fetching accounts", Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Log.e("Fetch Accounts Error", error.toString());
+                    Toast.makeText(ActivityAkun.this, "Error fetching accounts", Toast.LENGTH_SHORT).show();
                 });
-
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
 
-    //to do besok -> make it akun id into variable so i can change the data when i click it in the recyclerview , and somehow connect into MainActivity
     private void totalduit() {
         String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=1";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -157,11 +138,11 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
                         double totalExpense = calculateTotal("expenses", "expense_amount", response);
                         incomeTextView.setText(String.format("Rp. %.2f", totalIncome));
                         expenseTextView.setText(String.format("Rp. %.2f", totalExpense));
-
                     } catch (JSONException e) {
                         Log.e("JSONError", "Failed to parse JSON response: " + e.getMessage());
                     }
-                }, error -> Log.e("NetworkError", "Error fetching data: " + error.getMessage()));
+                },
+                error -> Log.e("NetworkError", "Error fetching data: " + error.getMessage()));
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
@@ -176,71 +157,152 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         return total;
     }
 
-
+    // click di item recycleview << might delete later ehe
     @Override
-    public void onItemClick(int position) { // click di item recycleview << might delete later ehe
+    public void onItemClick(int position) {
         Account clickedAccount = accountList.get(position);
         namadash.setText(clickedAccount.getAccountName());
         namadeskripsi.setText(clickedAccount.getDescription());
         totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());
     }
 
+    @Override
+    public void onEditClick(int position) {
+        Account account = accountList.get(position);
+        showEditDialog(account);
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+        Account account = accountList.get(position);
+        showDeleteConfirmation(account);
+    }
+
+    private void showEditDialog(Account account) {
+        AlertDialog.Builder editDialogBuilder = new AlertDialog.Builder(this);
+        View editView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_akun, null, false);
+        final EditText inputName = editView.findViewById(R.id.input_account_name);
+        final EditText inputDescription = editView.findViewById(R.id.input_description);
+        final EditText inputBalance = editView.findViewById(R.id.input_initial_balance);
+        Button saveButton = editView.findViewById(R.id.button_save);
+
+        inputName.setText(account.getAccountName());
+        inputDescription.setText(account.getDescription());
+        inputBalance.setText(String.valueOf(account.getInitialBalance()));
+
+        editDialogBuilder.setView(editView);
+        AlertDialog editDialog = editDialogBuilder.create();
+        editDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        saveButton.setOnClickListener(v -> {
+            String newName = inputName.getText().toString();
+            String newDescription = inputDescription.getText().toString();
+            double newBalance = Double.parseDouble(inputBalance.getText().toString());
+            updateAccount(account.getAccountId(), newName, newDescription, newBalance);
+            editDialog.dismiss();
+        });
+
+        editDialog.show();
+    }
+
+    private void showDeleteConfirmation(Account account) {
+        new AlertDialog.Builder(this)
+                .setTitle("Konfirmasi")
+                .setMessage("Apakah Anda yakin ingin menghapus akun ini?")
+                .setPositiveButton("Hapus", (dialog, which) -> deleteAccount(account.getAccountId()))
+                .setNegativeButton("Batal", null)
+                .show();
+    }
+
+    private void updateAccount(int accountId, String name, String description, double balance) {
+        String url = "http://10.0.2.2:80/Expense_Manager/update_account.php";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    Toast.makeText(ActivityAkun.this, "Akun berhasil diperbarui", Toast.LENGTH_SHORT).show();
+                    fetchAkundata(); // Refresh List after update
+                },
+                error -> {
+                    Log.e("Error Update Akun", error.toString());
+                    Toast.makeText(ActivityAkun.this, "Error memperbarui akun", Toast.LENGTH_SHORT).show();
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("account_id", String.valueOf(accountId));
+                params.put("account_name", name);
+                params.put("description", description);
+                params.put("initial_balance", String.valueOf(balance));
+                return params;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(postRequest);
+    }
+
+    private void deleteAccount(int accountId) {
+        String url = "http://10.0.2.2:80/Expense_Manager/delete_account.php?account_id=" + accountId;
+
+        StringRequest deleteRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    if (response.equals("sukses")) {
+                        Toast.makeText(ActivityAkun.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                        fetchAkundata(); // Refresh data
+                    } else {
+                        Toast.makeText(ActivityAkun.this, "Delete failed: " + response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e("Error Delete Account", error.toString());
+                    Toast.makeText(ActivityAkun.this, "Error deleting account", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(deleteRequest);
+    }
+
     //cobain tambahhh pakai alert dialog
     private void TampilTambahAkun() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tambah Akun");
+        AlertDialog.Builder tambahakunBuilder = new AlertDialog.Builder(this);
+        View tambahakuninflate = LayoutInflater.from(this).inflate(R.layout.dialog_tambah_akun, null, false);
+        final EditText inputName = tambahakuninflate.findViewById(R.id.input_account_name);
+        final EditText inputDescription = tambahakuninflate.findViewById(R.id.input_description);
+        final EditText inputBalance = tambahakuninflate.findViewById(R.id.input_initial_balance);
+        Button saveButton = tambahakuninflate.findViewById(R.id.button_add_account);
 
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_tambah_akun, null, false);
-        final EditText inputName = viewInflated.findViewById(R.id.input_account_name);
-        final EditText inputDescription = viewInflated.findViewById(R.id.input_description);
-        final EditText inputBalance = viewInflated.findViewById(R.id.input_initial_balance);
+        tambahakunBuilder.setView(tambahakuninflate);
+        AlertDialog tambahakun = tambahakunBuilder.create();
+        tambahakun.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        builder.setView(viewInflated);
+        saveButton.setOnClickListener(v -> {
+            String accountName = inputName.getText().toString();
+            String description = inputDescription.getText().toString();
+            double initialBalance = Double.parseDouble(inputBalance.getText().toString());
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                String accountName = inputName.getText().toString();
-                String description = inputDescription.getText().toString();
-                double initialBalance = Double.parseDouble(inputBalance.getText().toString());
-                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-                TambahAkunKedb(accountName, description, initialBalance, currentDate);
-            }
+            TambahAkunKedb(accountName, description, initialBalance, currentDate);
+            tambahakun.dismiss();
         });
 
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+        tambahakun.show();
     }
 
     private void TambahAkunKedb(final String accountName, final String description, final double initialBalance, final String date) {
         String url = "http://10.0.2.2:80/Expense_Manager/add_account.php";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(ActivityAkun.this, "Akun Berhasil Ditambahkan", Toast.LENGTH_SHORT).show();
-                        fetchAkundata(); // Refresh List nya setelah tambah <<<
-                    }
+                response -> {
+                    Toast.makeText(ActivityAkun.this, "Akun Berhasil Ditambahkan", Toast.LENGTH_SHORT).show();
+                    fetchAkundata(); // Refresh List after addition
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Error Tambah Akun", error.toString());
-                        Toast.makeText(ActivityAkun.this, "Error Menambah Akun", Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Log.e("Error Tambah Akun", error.toString());
+                    Toast.makeText(ActivityAkun.this, "Error Menambah Akun", Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override
-            protected Map<String, String> getParams() { //https://www.w3schools.com/java/java_hashmap.asp
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("account_name", accountName);
                 params.put("description", description);
