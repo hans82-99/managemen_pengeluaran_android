@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 public class ExpCategoryAdapter extends ArrayAdapter<modelexpcategory> {
+    private List<modelexpcategory> catlist;
 
     public ExpCategoryAdapter(@NonNull Context context, @NonNull List<modelexpcategory> categories) {
         super(context, 0, categories);

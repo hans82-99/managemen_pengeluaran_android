@@ -48,7 +48,7 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
                 String account_balance = (String) arg0[3];
                 String date = (String) arg0[4];
 
-                String link = "http://10.0.2.2:80/Expense_Manager/updatebalkedb.php?id=" + account_id;
+                String link = "https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php?id=" + account_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -80,7 +80,7 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
                 String initial_balance = (String) arg0[3];
                 String date = (String) arg0[4];
 
-                URL url = new URL("http://10.0.2.2:80/Expense_Manager/updatebalkedb.php");
+                URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

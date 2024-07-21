@@ -48,7 +48,7 @@ public class useforcrud extends AsyncTask<String, Void, String> {
             try {
                 String expense_category_id = (String) arg0[0];
 
-                String link = "http://10.0.2.2:80/Expense_Manager/hapuscatfromdb.php?expense_category_id=" + expense_category_id;
+                String link = "https://mobilekuti2022.web.id/Expense_Manager/hapuscatfromdb.php?expense_category_id=" + expense_category_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -77,7 +77,7 @@ public class useforcrud extends AsyncTask<String, Void, String> {
                 String expense_category_id = (String) arg0[0];
                 String expense_category_name = (String) arg0[1];
 
-                URL url = new URL("http://10.0.2.2:80/Expense_Manager/updatecatdb.php");
+                URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatecatdb.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

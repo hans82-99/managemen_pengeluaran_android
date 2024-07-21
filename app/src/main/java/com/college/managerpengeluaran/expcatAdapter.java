@@ -106,7 +106,11 @@ public class expcatAdapter extends RecyclerView.Adapter<expcatAdapter.ViewHolder
             }
         });
 
+        //DatabaseHelper inidb = DatabaseHelper.getDB(context);
+        //xpcatList = inidb.AssistCat().getAllCat();
+
         holder.namakategoriini.setText(cat.getExpense_category_name());
+        //holder.namakategoriini.setText();
     }
 
     @Override

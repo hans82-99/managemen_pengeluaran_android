@@ -53,6 +53,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:fontFamily="@font/inter"
+            android:text="Kategori"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/txtkategori"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/inter"
+            android:text="Nicco Ananta Tri Kusuma"
+            android:textSize="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/inter"
             android:text="Tanggal dan waktu"
             android:textSize="12dp" />
 

@@ -73,7 +73,7 @@
                 android:fontFamily="@font/inter_black"
                 android:text="PENGELUARAN"
                 android:textColor="#8D493A"
-                android:textSize="24dp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -84,13 +84,13 @@
                 android:fontFamily="@font/inter"
                 android:text="Setiap pengeluaran pasti terdapat pemasukan"
                 android:textColor="#8D493A"
-                android:textSize="14dp" />
+                android:textSize="12dp" />
 
             <EditText
                 android:id="@+id/namapengeluaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/foredittext"

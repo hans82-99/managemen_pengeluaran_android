@@ -115,7 +115,6 @@ public class ActivityTambah extends AppCompatActivity {
         //Account account = new Account();
         DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
         takeakun = dbHelper.AssistAkun().getAkun();
-        System.out.println(takeakun.get(0).getAccount_id());
 
         crudkategori.setOnClickListener(v -> startActivity
                 (new Intent(getApplicationContext(), crudkategori.class))
@@ -217,7 +216,7 @@ public class ActivityTambah extends AppCompatActivity {
 
     // Spinner
     private void fetchCategories() {
-        String url = "http://10.0.2.2:80/Expense_Manager/getcatdb.php";
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -292,7 +291,7 @@ public class ActivityTambah extends AppCompatActivity {
             HttpURLConnection conn = null;
 
             try {
-                URL url = new URL("http://10.0.2.2:80/Expense_Manager/simpanexpense.php");
+                URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/simpanexpense.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

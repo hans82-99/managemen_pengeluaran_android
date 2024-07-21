@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private List<Transaction> transactions;
     private Context context;
     private List<modelakun> takeakun;
+    private List<modelexpcategory> takecat;
 
     public TransactionAdapter(List<Transaction> transactions, Context context) {
         this.transactions = transactions;
@@ -92,6 +94,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
                 TextView title = inidialog.findViewById(R.id.txtnamapengeluaran);
                 TextView jumlahpengeluaran = inidialog.findViewById(R.id.txtjumlahpengeluaran);
+                TextView kategori = inidialog.findViewById(R.id.txtkategori);
                 TextView description = inidialog.findViewById(R.id.txtdeskripsi);
                 TextView date = inidialog.findViewById(R.id.txtdateandtime);
                 TextView gambar = inidialog.findViewById(R.id.txtgambar);
@@ -105,6 +108,31 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
                 title.setText(transaction.getTitle());
                 jumlahpengeluaran.setText("Rp. " + String.valueOf(transaction.getAmount()));
+
+                DatabaseHelper inidb = DatabaseHelper.getDB(context);
+                takecat = inidb.AssistCat().getAllCat();
+                takeakun = inidb.AssistAkun().getAkun();
+
+                if (transaction.isIncome()) {
+                    for (int i = 0; i < takecat.size(); i++) {
+                        if (takecat.get(i).getId_expense() == transaction.getCategory()) {
+                            kategori.setText(takecat.get(i).getExpense_category_name());
+                        }
+                    }
+                } else {
+                    boolean found = false;
+                    for (int i = 0; i < takecat.size(); i++) {
+                        if (takecat.get(i).getId_expense() == transaction.getCategory()) {
+                            kategori.setText(takecat.get(i).getExpense_category_name());
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found || transaction.getCategory() == 0) {
+                        kategori.setText("null");
+                    }
+                }
+
                 description.setText(transaction.getDescription());
                 date.setText(kombotanggal);
                 gambar.setText(transaction.getImageDesc());

@@ -3,6 +3,7 @@ package com.college.managerpengeluaran;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -31,10 +32,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import com.college.managerpengeluaran.crudkategori;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private TransactionAdapter transactionAdapter;
     private List<Transaction> transactionList;
     private List<modelakun> takeakun;
+    private List<modelexpcategory> takecat;
     private Context context;
 
     @Override
@@ -63,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
         takeakun = (List<modelakun>) dbHelper.AssistAkun().getAkun();
+        takecat = (List<modelexpcategory>) dbHelper.AssistCat().getAllCat();
 
         if (takeakun.isEmpty()) {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -72,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent keakun = new Intent(getApplicationContext(), ActivityAkun.class);
+                    startActivity(keakun);
                 }
             });
             alertDialog.setNegativeButton("Nanti Saja", new DialogInterface.OnClickListener() {
@@ -86,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             namadash.setText(takeakun.get(0).getAccount_name());
             totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
             fetchData();
+            new ngambilkategori().execute("https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php");
         }
 
         transactionList = new ArrayList<>();
@@ -121,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchData() {
-        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+        System.out.println(url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -161,7 +173,13 @@ public class MainActivity extends AppCompatActivity {
                                 transaction.setDescription(expense.getString("description"));
                                 transaction.setDate(expense.getString("date"));
                                 transaction.setAmount(expense.getDouble("expense_amount"));
-                                transaction.setCategory(expense.getInt("expense_category_id"));
+
+                                if (!expense.isNull("expense_category_id") && !expense.getString("expense_category_id").isEmpty() && expense.getInt("expense_category_id") != 0) {
+                                    transaction.setCategory(expense.getInt("expense_category_id"));
+                                } else {
+                                    transaction.setCategory(0);
+                                }
+
                                 transaction.setUser_id(expense.getInt("user_id"));
                                 transaction.setImageDesc(expense.getString("exp_image_desc"));
                                 transaction.setIncome(false);
@@ -226,6 +244,51 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private class ngambilkategori extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+                conn.disconnect();
+                response = content.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONArray category = new JSONArray(result);
+                for (int i = 0; i < category.length(); i++) {
+                    JSONObject jsonObject = category.getJSONObject(i);
+                    modelexpcategory masuksini = new modelexpcategory();
+                    masuksini.setId_expense(jsonObject.getInt("expense_category_id"));
+                    masuksini.setExpense_category_name(jsonObject.getString("expense_category_name"));
+                    takecat.add(masuksini);
+
+                    DatabaseHelper inidb = DatabaseHelper.getDB(MainActivity.this);
+                    inidb.AssistCat().addto(masuksini);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

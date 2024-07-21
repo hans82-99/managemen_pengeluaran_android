@@ -117,7 +117,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void fetchAkundata() {
-        String url = "http://10.0.2.2:80/Expense_Manager/fetch_accounts.php";
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/fetch_accounts.php";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -146,7 +146,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void totalduit() {
-        String url = "http://10.0.2.2:80/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -244,7 +244,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void updateAccount(int accountId, String name, String description, double balance) {
-        String url = "http://10.0.2.2:80/Expense_Manager/update_account.php";
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/update_account.php";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     Toast.makeText(ActivityAkun.this, "Akun berhasil diperbarui", Toast.LENGTH_SHORT).show();
@@ -270,7 +270,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void deleteAccount(int accountId) {
-        String url = "http://10.0.2.2:80/Expense_Manager/delete_account.php?account_id=" + accountId;
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/delete_account.php?account_id=" + accountId;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -318,7 +318,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     }
 
     private void TambahAkunKedb(final String accountName, final String description, final double initialBalance, final String date) {
-        String url = "http://10.0.2.2:80/Expense_Manager/add_account.php";
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/add_account.php";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 response -> {

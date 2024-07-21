@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = modelakun.class, version = 1, exportSchema = false)
+@Database(entities = {modelakun.class, modelexpcategory.class}, version = 3, exportSchema = false)
 public abstract class DatabaseHelper extends RoomDatabase {
     public static final String DB_NAME = "ExpenseDB";
     public static DatabaseHelper instance;
@@ -22,4 +22,6 @@ public abstract class DatabaseHelper extends RoomDatabase {
     }
 
     public abstract AssistAkun AssistAkun();
+
+    public abstract AssistCat AssistCat();
 }

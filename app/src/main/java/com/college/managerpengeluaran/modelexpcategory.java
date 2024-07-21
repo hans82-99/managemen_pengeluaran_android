@@ -1,8 +1,20 @@
 package com.college.managerpengeluaran;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "modelexpcategory")
 public class modelexpcategory {
-    String expense_category_name;
+    public static final String TABLE_CATEGORY = "modelexpcategory";
+
+    @PrimaryKey
+    @ColumnInfo(name = "id_expense")
     int id_expense;
+
+    @ColumnInfo(name = "expense_category_name")
+    String expense_category_name;
 
     public modelexpcategory(String expense_category_name, int id_expense) {
         this.expense_category_name = expense_category_name;

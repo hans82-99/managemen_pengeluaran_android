@@ -1,5 +1,6 @@
 package com.college.managerpengeluaran;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -70,13 +71,18 @@ public class crudkategori extends AppCompatActivity {
             }
         });
 
-        new ngambilkategori().execute("http://10.0.2.2:80/Expense_Manager/getcatdb.php");
+        new ngambilkategoriini().execute("https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php");
 
         addtocatdb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String value = valuecategory.getText().toString();
-                simpanKeCatDB(value);
+                if (valuecategory.getText().toString().isEmpty()) {
+                    Toast.makeText(crudkategori.this, "Silahkan isi terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    String value = valuecategory.getText().toString();
+                    simpanKeCatDB(value);
+                }
             }
         });
 
@@ -113,7 +119,7 @@ public class crudkategori extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         // URL endpoint untuk menyimpan data kategori
-        String url = "http://10.0.2.2:80/Expense_Manager/simpancatdb.php?expense_category_name=" + value;
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/simpancatdb.php?expense_category_name=" + value;
 
         // Membuat StringRequest
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -125,9 +131,16 @@ public class crudkategori extends AppCompatActivity {
                         //Toast.makeText(crudkategori.this, "Data berhasil disimpan", Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            modelexpcategory newCategory = new modelexpcategory();
-                            newCategory.setId_expense(jsonObject.getInt("expense_category_id"));
-                            newCategory.setExpense_category_name(jsonObject.getString("expense_category_name"));
+                            DatabaseHelper inidb = DatabaseHelper.getDB(crudkategori.this);
+                            int nampungcatid = jsonObject.getInt("expense_category_id");
+                            String nampungcatname = jsonObject.getString("expense_category_name");
+
+                            modelexpcategory newCategory = new modelexpcategory(nampungcatname, nampungcatid);
+
+                            inidb.AssistCat().addto(newCategory);
+
+                            //newCategory.setId_expense(jsonObject.getInt("expense_category_id"));
+                            //newCategory.setExpense_category_name(jsonObject.getString("expense_category_name"));
                             catlist.add(newCategory);
                             expcatAdapter.notifyItemInserted(catlist.size() - 1);
                             valuecategory.setText("");
@@ -150,7 +163,8 @@ public class crudkategori extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private class ngambilkategori extends AsyncTask<String, Void, String> {
+    private class ngambilkategoriini extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -183,6 +197,9 @@ public class crudkategori extends AppCompatActivity {
                     masuksini.setId_expense(jsonObject.getInt("expense_category_id"));
                     masuksini.setExpense_category_name(jsonObject.getString("expense_category_name"));
                     catlist.add(masuksini);
+
+                    DatabaseHelper inidb = DatabaseHelper.getDB(crudkategori.this);
+                    inidb.AssistCat().naikver(masuksini);
                 }
                 expcatAdapter.notifyDataSetChanged();
             } catch (Exception e) {
