@@ -18,6 +18,9 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
     private ActivityTambah.inputexpense inputexpense;
     private int flagini;
     HttpURLConnection conn = null;
+    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+
 
     public crudforbalance(Class<ActivityTambah> activityTambahClass, ActivityTambah.inputexpense inputexpense, int i) {
         this.activityTambahClass = activityTambahClass;
@@ -48,7 +51,8 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
                 String account_balance = (String) arg0[3];
                 String date = (String) arg0[4];
 
-                String link = "https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php?id=" + account_id;
+                //String link = "https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php?id=" + account_id;\
+                String link = BASE_URL + "updatebalkedb.php?id=" + account_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -80,7 +84,8 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
                 String initial_balance = (String) arg0[3];
                 String date = (String) arg0[4];
 
-                URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php");
+                //URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatebalkedb.php");
+                URL url = new URL(BASE_URL +"updatebalkedb.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

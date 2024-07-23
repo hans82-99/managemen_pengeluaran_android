@@ -21,6 +21,8 @@ public class transactionCrud extends AsyncTask <String, Void, String>{
     private HttpURLConnection conn;
     List<modelakun> takeakun;
     DatabaseHelper dbHelper;
+    //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
 
     public transactionCrud(Class<TransactionAdapter> transactionAdapterClass, DialogInterface.OnClickListener onClickListener, int i) {
         this.transactionAdapterClass = transactionAdapterClass;
@@ -43,7 +45,8 @@ public class transactionCrud extends AsyncTask <String, Void, String>{
                 takeakun = dbHelper.AssistAkun().getAkun();
                 String expense_id = (String) arg0[0];
 
-                String link = "https://mobilekuti2022.web.id/Expense_Manager/hapusexpense.php?expense_id=" + expense_id;
+                //String link = "https://mobilekuti2022.web.id/Expense_Manager/hapusexpense.php?expense_id=" + expense_id;
+                String link = BASE_URL + "hapusexpense.php?expense_id=" + expense_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -71,7 +74,8 @@ public class transactionCrud extends AsyncTask <String, Void, String>{
             try {
                 String income_id = (String) arg0[0];
 
-                String link = "https://mobilekuti2022.web.id/Expense_Manager/hapusincome.php?income_id=" + income_id;
+                //String link = "https://mobilekuti2022.web.id/Expense_Manager/hapusincome.php?income_id=" + income_id;
+                String link = BASE_URL +"hapusincome.php?income_id=" + income_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -100,7 +104,8 @@ public class transactionCrud extends AsyncTask <String, Void, String>{
                 String expense_category_id = (String) arg0[0];
                 String expense_category_name = (String) arg0[1];
 
-                URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatecatdb.php");
+                //URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatecatdb.php");
+                URL url = new URL(BASE_URL+"updatecatdb.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

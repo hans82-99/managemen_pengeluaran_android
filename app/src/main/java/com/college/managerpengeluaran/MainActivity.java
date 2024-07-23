@@ -6,12 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -41,8 +36,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.college.managerpengeluaran.crudkategori;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView namadash, totalbalancedash, incomedash, expensedash;
@@ -52,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private List<modelakun> takeakun;
     private List<modelexpcategory> takecat;
     private Context context;
+    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +90,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             namadash.setText(takeakun.get(0).getAccount_name());
             totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
-            fetchData();
-            new ngambilkategori().execute("https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php");
+            fetchData(new DataFetchListener() {
+                @Override
+                public void onDataFetched(List<Transaction> transactions, double totalIncome, double totalExpense) {
+                    transactionList.clear();
+                    transactionList.addAll(transactions);
+                    transactionAdapter.notifyDataSetChanged();
+                }
+            });
+            //new ngambilkategori().execute("https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php");
+            new ngambilkategori().execute(BASE_URL +"getcatdb.php");
         }
 
         transactionList = new ArrayList<>();
@@ -131,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchData() {
-        String url = "https://mobilekuti2022.web.id/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+    public void fetchData(DataFetchListener dataFetchListener) {
+        //String url = "https://mobilekuti2022.web.id/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+        String url = BASE_URL + "get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
         System.out.println(url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -245,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(request);
     }
+
+    public interface DataFetchListener {
+        void onDataFetched(List<Transaction> transactionList, double totalIncome, double totalExpense);
+    }
+
 
     private class ngambilkategori extends AsyncTask<String, Void, String> {
 

@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private Context context;
     private List<modelakun> takeakun;
     private List<modelexpcategory> takecat;
+    //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
 
     public TransactionAdapter(List<Transaction> transactions, Context context) {
         this.transactions = transactions;
@@ -97,7 +102,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 TextView kategori = inidialog.findViewById(R.id.txtkategori);
                 TextView description = inidialog.findViewById(R.id.txtdeskripsi);
                 TextView date = inidialog.findViewById(R.id.txtdateandtime);
-                TextView gambar = inidialog.findViewById(R.id.txtgambar);
+                ImageView gambar = inidialog.findViewById(R.id.txtgambar);
                 TextView kuantitas = inidialog.findViewById(R.id.txtkuantitas);
                 TextView paymentmethod = inidialog.findViewById(R.id.txtpaymentmethod);
                 Button batal = inidialog.findViewById(R.id.btnbatal);
@@ -135,7 +140,26 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
                 description.setText(transaction.getDescription());
                 date.setText(kombotanggal);
-                gambar.setText(transaction.getImageDesc());
+                //gambar.setText(transaction.getImageDesc());
+
+                // Bangun URL lengkap untuk gambar
+                String imageUrl = BASE_URL + transaction.getImageDesc();
+                // Load image using Picasso in the dialog
+                Picasso.get()
+                        .load(imageUrl)
+                        //.placeholder(R.drawable.placeholder) // Add a placeholder image if needed
+                        //.error(R.drawable.error) // Add an error image if needed
+                        .into(gambar, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("Picasso", "Image loaded successfully.");
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Log.e("Picasso", "Failed to load image: " + e.getMessage());
+                            }
+                        });
 
                 if (transaction.isIncome()) {
                     kuantitas.setText("null");
@@ -163,6 +187,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.date.setText(transaction.getDate());
         holder.amount.setText("Rp. " + String.valueOf(transaction.getAmount()));
         holder.amount.setTextColor(transaction.isIncome() ? Color.GREEN : Color.RED);
+        // Load image using Picasso
+       // Picasso.get()
+                //.load(transaction.getImageDesc())
+                //.placeholder(R.drawable.placeholder) // Add a placeholder image if needed
+                //.error(R.drawable.error) // Add an error image if needed
+                //.into(holder.image);
     }
 
     @Override
