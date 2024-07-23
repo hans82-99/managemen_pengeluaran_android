@@ -46,10 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.canhub.cropper.CropImage;
-import com.canhub.cropper.CropImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -326,7 +323,7 @@ public class ActivityTambah extends AppCompatActivity {
         });
     }
 
-    private void RegisterResult(){
+    private void RegisterResult() {
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -344,43 +341,31 @@ public class ActivityTambah extends AppCompatActivity {
                                     Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                                // ngecek return bitmap dari Extras
+                                Bundle extras = data.getExtras();
+                                if (extras != null) {
+                                    Bitmap bitmap = (Bitmap) extras.get("data");
+                                    if (bitmap != null) {
+                                        viewgambarpengeluaran.setImageBitmap(bitmap);
+                                        exp_image_desc = bitmap; // Simpan bitmap jika perlu
+                                    } else {
+                                        Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                                }
                             }
+                        } else {
+                            Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
     }
-    /*private  void RegisterResult(){
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        try {if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                            Uri imageUri = result.getData().getData();
-                            Picasso.get().load(imageUri).into(viewgambarpengeluaran);
-                        } else {
-                            Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
-                        }
-                        } catch (Exception e){
-                            Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
-                        }
 
-                    }
-                }
-        );
-
-    }*/
-
-    /*private void PickImage() {
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        activityResultLauncher.launch(intent);
-    }*/
     private void PickImage() {
         Intent pickIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        pickIntent.setType("image/*");
+        pickIntent.setType("image/*"); // ganti aja ke apa gitu nama kalo mao
 
         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
