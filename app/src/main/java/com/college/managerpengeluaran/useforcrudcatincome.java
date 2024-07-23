@@ -1,7 +1,5 @@
 package com.college.managerpengeluaran;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,8 +18,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class useforcrud extends AsyncTask<String, Void, String> {
-    private Class<expcatAdapter> iniexpcatadapt;
+public class useforcrudcatincome extends AsyncTask<String, Void, String> {
+    private Class<inccatAdapter> inccatAdapter;
     private DialogInterface.OnClickListener onClickListener;
     private View.OnClickListener onClickListener1;
     private int i;
@@ -29,30 +27,29 @@ public class useforcrud extends AsyncTask<String, Void, String> {
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
     private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
+    HttpURLConnection conn = null;
 
-    public useforcrud(Class<expcatAdapter> expcatAdapterClass, DialogInterface.OnClickListener onClickListener, int i) {
-        this.iniexpcatadapt = expcatAdapterClass;
-        this.onClickListener = onClickListener;
-        this.flagini = i;
-    }
-
-    public useforcrud(Class<expcatAdapter> expcatAdapterClass, View.OnClickListener onClickListener, int i) {
-        this.iniexpcatadapt = expcatAdapterClass;
+    public useforcrudcatincome(Class<inccatAdapter> inccatAdapterClass, View.OnClickListener onClickListener, int i) {
+        this.inccatAdapter =  inccatAdapterClass;
         this.onClickListener1 = onClickListener;
         this.flagini = i;
     }
 
-    HttpURLConnection conn = null;
+    public useforcrudcatincome(Class<com.college.managerpengeluaran.inccatAdapter> inccatAdapterClass, DialogInterface.OnClickListener onClickListener, int i) {
+        this.inccatAdapter =  inccatAdapterClass;
+        this.onClickListener = onClickListener;
+        this.flagini = i;
+    }
 
     @Override
     protected String doInBackground(String... arg0) {
         String result = "";
         if (flagini == 0) {
             try {
-                String expense_category_id = (String) arg0[0];
+                String income_category_id = (String) arg0[0];
 
                 //String link = "https://mobilekuti2022.web.id/Expense_Manager/hapuscatfromdb.php?expense_category_id=" + expense_category_id;
-                String link = BASE_URL +"hapuscatfromdb.php?expense_category_id=" + expense_category_id;
+                String link = BASE_URL +"hapusincat.php?expense_category_id=" + income_category_id;
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -78,8 +75,8 @@ public class useforcrud extends AsyncTask<String, Void, String> {
             }
         } else if (flagini == 1) {
             try {
-                String expense_category_id = (String) arg0[0];
-                String expense_category_name = (String) arg0[1];
+                String income_category_id = (String) arg0[0];
+                String income_category_name = (String) arg0[1];
 
                 //URL url = new URL("https://mobilekuti2022.web.id/Expense_Manager/updatecatdb.php");
                 URL url = new URL(BASE_URL+"updatecatdb.php");
@@ -88,8 +85,8 @@ public class useforcrud extends AsyncTask<String, Void, String> {
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-                String data = URLEncoder.encode("expense_category_id", "UTF-8") + "=" + URLEncoder.encode(expense_category_id, "UTF-8");
-                data += "&" + URLEncoder.encode("expense_category_name", "UTF-8") + "=" + URLEncoder.encode(expense_category_name, "UTF-8");
+                String data = URLEncoder.encode("income_category_id", "UTF-8") + "=" + URLEncoder.encode(income_category_id, "UTF-8");
+                data += "&" + URLEncoder.encode("income_category_name", "UTF-8") + "=" + URLEncoder.encode(income_category_name, "UTF-8");
 
                 System.out.println(data);
 

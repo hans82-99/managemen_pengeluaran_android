@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="30dp"
+    tools:context=".ActivityHistory">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Mulai"
+            android:gravity="center"
+            android:fontFamily="@font/inter"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tglmulai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="YYYY-MM-DD"
+            android:gravity="center"
+            android:fontFamily="@font/inter"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Akhir"
+            android:gravity="center"
+            android:fontFamily="@font/inter"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tglakhir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="YYYY-MM-DD"
+            android:gravity="center"
+            android:fontFamily="@font/inter"
+            android:textSize="14dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnpickdatestart"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:width="100dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
+                android:text="awal"
+                android:textColor="#EEEEEE"
+                android:textSize="10dp" />
+
+            <Button
+                android:id="@+id/btnpickdateend"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:width="100dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
+                android:text="akhir"
+                android:textColor="#EEEEEE"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnbatal"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:width="100dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
+                android:text="Batal"
+                android:layout_marginRight="20dp"
+                android:textColor="#EEEEEE"
+                android:textSize="10dp" />
+
+            <Button
+                android:id="@+id/btnfilnow"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:width="100dp"
+                android:background="@drawable/buttondash"
+                android:fontFamily="@font/inter"
+                android:text="Submit"
+                android:textColor="#EEEEEEEE"
+                android:textSize="10dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

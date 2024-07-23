@@ -1,8 +1,17 @@
 package com.college.managerpengeluaran;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,17 +35,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityHistory extends AppCompatActivity {
 
+    Button buttonyear, buttonmonth, buttonweek, buttontoday, butonrange, butonall, cari;
+    EditText searchbar;
+    TextView incomemasuk, expensemasuk;
+
     private RecyclerView recyclerView;
     private TransactionAdapter transactionAdapter;
+    private TransactionAdapter transactionAdapterfiltered;
     private List<Transaction> transactionList;
+    private List<Transaction> transactionfiltered;
     private List<modelakun> takeakun;
+
+    public double income = 0.00;
+    public double expense = 0.00;
+    public double totalIncome = 0.00;
+    public double totalExpense = 0.00;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +69,14 @@ public class ActivityHistory extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewhistory);
         transactionList = new ArrayList<>();
+        transactionfiltered = new ArrayList<>();
         transactionAdapter = new TransactionAdapter(transactionList, this);
+        transactionAdapterfiltered = new TransactionAdapter(transactionfiltered, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(transactionAdapter);
+
+        incomemasuk = findViewById(R.id.incomemasuk);
+        expensemasuk = findViewById(R.id.expensemasuk);
 
         // Inisialisasi DatabaseHelper dan ambil data akun
         DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
@@ -56,6 +85,176 @@ public class ActivityHistory extends AppCompatActivity {
         // Fetch data
         fetchData();
 
+        buttontoday = findViewById(R.id.buttonDay);
+        buttontoday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog inidialog = new Dialog(ActivityHistory.this);
+                inidialog.setContentView(R.layout.filterday);
+                inidialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                TextView initanggal = inidialog.findViewById(R.id.inputtglini);
+                Button pickdate = inidialog.findViewById(R.id.btnpickdate);
+                Button filternow = inidialog.findViewById(R.id.btnfilnow);
+                Button batal = inidialog.findViewById(R.id.btnbatal);
+
+                pickdate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar kalender = Calendar.getInstance();
+                        int tahun = kalender.get(Calendar.YEAR);
+                        int bulan = kalender.get(Calendar.MONTH);
+                        int hari = kalender.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog ambildate = new DatePickerDialog(
+                                ActivityHistory.this,
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
+                                        String date = String.format("%d-%02d-%02d", tahun, bulan + 1, hari);
+                                        initanggal.setText(date);
+                                    }
+                                },
+                                tahun, bulan, hari
+                        );
+                        ambildate.show();
+                    }
+                });
+
+                butonrange = findViewById(R.id.buttonRange);
+                butonrange.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dialog inidialog = new Dialog(ActivityHistory.this);
+                        inidialog.setContentView(R.layout.filterrange);
+                        inidialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                        TextView tanggal1 = inidialog.findViewById(R.id.tglmulai);
+                        TextView tanggal2 = inidialog.findViewById(R.id.tglakhir);
+                        Button startpick = inidialog.findViewById(R.id.btnpickdatestart);
+                        Button endpick = inidialog.findViewById(R.id.btnpickdateend);
+                        Button batal = inidialog.findViewById(R.id.btnbatal);
+                        Button submit = inidialog.findViewById(R.id.btnfilnow);
+
+                        startpick.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Calendar kalender = Calendar.getInstance();
+                                int tahun = kalender.get(Calendar.YEAR);
+                                int bulan = kalender.get(Calendar.MONTH);
+                                int hari = kalender.get(Calendar.DAY_OF_MONTH);
+
+                                DatePickerDialog ambildate1 = new DatePickerDialog(
+                                        ActivityHistory.this,
+                                        new DatePickerDialog.OnDateSetListener() {
+                                            @Override
+                                            public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
+                                                String date = String.format("%d-%02d-%02d", tahun, bulan + 1, hari);
+                                                tanggal1.setText(date);
+                                            }
+                                        },
+                                        tahun, bulan, hari
+                                );
+                                ambildate1.show();
+                            }
+                        });
+
+                        endpick.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Calendar kalender = Calendar.getInstance();
+                                int tahun = kalender.get(Calendar.YEAR);
+                                int bulan = kalender.get(Calendar.MONTH);
+                                int hari = kalender.get(Calendar.DAY_OF_MONTH);
+
+                                DatePickerDialog ambildate2 = new DatePickerDialog(
+                                        ActivityHistory.this,
+                                        new DatePickerDialog.OnDateSetListener() {
+                                            @Override
+                                            public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
+                                                String date = String.format("%d-%02d-%02d", tahun, bulan + 1, hari);
+                                                tanggal2.setText(date);
+                                            }
+                                        },
+                                        tahun, bulan, hari
+                                );
+                                ambildate2.show();
+                            }
+                        });
+                        batal.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                inidialog.dismiss();
+                            }
+                        });
+
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                filterdaterange(tanggal1.getText().toString(), tanggal2.getText().toString());
+                                inidialog.dismiss();
+                            }
+                        });
+                        inidialog.show();
+                    }
+                });
+
+                batal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        inidialog.dismiss();
+                    }
+                });
+
+                filternow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        filterbydate(initanggal.getText().toString().trim());
+                        //System.out.println(initanggal);
+                        inidialog.dismiss();
+                    }
+                });
+                inidialog.show();
+            }
+        });
+
+        cari = findViewById(R.id.btncari);
+        searchbar = findViewById(R.id.searchBar);
+        cari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchbar.getText().toString();
+                filterbyname(searchbar.getText().toString().trim());
+            }
+        });
+
+        butonall = findViewById(R.id.buttonAll);
+        butonall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                transactionfiltered.clear();
+                incomemasuk.setText("Rp. " + totalIncome);
+                expensemasuk.setText("Rp. " + totalExpense);
+                transactionAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(transactionAdapter);
+            }
+        });
+
+        buttonyear = findViewById(R.id.buttonYear);
+        buttonyear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCurrentYear();
+            }
+        });
+
+        buttonmonth = findViewById(R.id.buttonMonth);
+        buttonmonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterByCurrentMonth();
+            }
+        });
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -92,7 +291,7 @@ public class ActivityHistory extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.1.13/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
+        String url = "https://mobilekuti2022.web.id/Expense_Manager/get_data.php?akun_id=" + takeakun.get(0).getAccount_id();
         System.out.println(url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -103,9 +302,6 @@ public class ActivityHistory extends AppCompatActivity {
                             Log.d("Response", response.toString());
 
                             transactionList.clear();
-
-                            double totalIncome = 0.00;
-                            double totalExpense = 0.00;
 
                             JSONArray expenses = response.getJSONArray("expenses");
                             for (int i = 0; i < expenses.length(); i++) {
@@ -154,6 +350,9 @@ public class ActivityHistory extends AppCompatActivity {
                                 totalIncome += income.getDouble("income_amount");
                             }
 
+                            incomemasuk.setText("Rp. " + String.format("%.2f", totalIncome));
+                            expensemasuk.setText("Rp. " + String.format("%.2f", totalExpense));
+
                             Collections.sort(transactionList, new Comparator<Transaction>() {
                                 @Override
                                 public int compare(Transaction t1, Transaction t2) {
@@ -182,4 +381,144 @@ public class ActivityHistory extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(request);
     }
+
+    private void filterbydate (String date) {
+        transactionfiltered.clear();
+        income = 0.00;
+        expense = 0.00;
+
+        for (Transaction data : transactionList) {
+            if (data.getDate().equals(date)) {
+                transactionfiltered.add(data);
+                if (data.isIncome()) {
+                    income += data.getAmount();
+                } else {
+                    expense += data.getAmount();
+                }
+                incomemasuk.setText("Rp. " + String.format("%.2f", income));
+                expensemasuk.setText("Rp. " + String.format("%.2f", expense));
+                recyclerView.setAdapter(transactionAdapterfiltered);
+            }
+        }
+    }
+
+    private void filterdaterange (String tanggalmulai, String tanggalakhir) {
+        SimpleDateFormat formattanggal = new SimpleDateFormat("yyyy-MM-dd");
+        transactionfiltered.clear();
+        income = 0.00;
+        expense = 0.00;
+
+        try {
+            Date start = formattanggal.parse(tanggalmulai);
+            Date end = formattanggal.parse(tanggalakhir);
+            for (Transaction data : transactionList) {
+                Date dataDate = formattanggal.parse(data.getDate());
+                if (dataDate != null && !dataDate.before(start) && !dataDate.after(end)) {
+                    transactionfiltered.add(data);
+                    if (data.isIncome()) {
+                        income += data.getAmount();
+                    } else {
+                        expense += data.getAmount();
+                    }
+                    incomemasuk.setText("Rp. " + String.format("%.2f", income));
+                    expensemasuk.setText("Rp. " + String.format("%.2f", expense));
+                    recyclerView.setAdapter(transactionAdapterfiltered);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void filterbyname (String name) {
+        transactionfiltered.clear();
+        income = 0.00;
+        expense = 0.00;
+
+        for (Transaction data : transactionList) {
+            if (data.getTitle().equals(name)) {
+                transactionfiltered.add(data);
+                if (data.isIncome()) {
+                    income += data.getAmount();
+                } else {
+                    expense += data.getAmount();
+                }
+                incomemasuk.setText("Rp. " + String.format("%.2f", income));
+                expensemasuk.setText("Rp. " + String.format("%.2f", expense));
+                transactionAdapterfiltered.notifyDataSetChanged();
+                recyclerView.setAdapter(transactionAdapterfiltered);
+            }
+        }
+    }
+
+    private void filterByCurrentYear() {
+        transactionfiltered.clear();
+        income = 0.00;
+        expense = 0.00;
+
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        for (Transaction data : transactionList) {
+            String dateString = data.getDate();
+            SimpleDateFormat formattanggal = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = formattanggal.parse(dateString);
+                calendar.setTime(date);
+                int year = calendar.get(Calendar.YEAR);
+                if (year == currentYear) {
+                    transactionfiltered.add(data);
+                    if (data.isIncome()) {
+                        income += data.getAmount();
+                    } else {
+                        expense += data.getAmount();
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        incomemasuk.setText("Rp. " + String.format("%.2f", income));
+        expensemasuk.setText("Rp. " + String.format("%.2f", expense));
+        transactionAdapterfiltered.notifyDataSetChanged();
+        recyclerView.setAdapter(transactionAdapterfiltered);
+    }
+
+    private void filterByCurrentMonth() {
+        transactionfiltered.clear();
+        income = 0.00;
+        expense = 0.00;
+
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        for (Transaction data : transactionList) {
+            String dateString = data.getDate();
+            SimpleDateFormat formattanggal = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = formattanggal.parse(dateString);
+                calendar.setTime(date);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+                if (month == currentMonth && year == currentYear) {
+                    transactionfiltered.add(data);
+                    if (data.isIncome()) {
+                        income += data.getAmount();
+                    } else {
+                        expense += data.getAmount();
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        incomemasuk.setText("Rp. " + String.format("%.2f", income));
+        expensemasuk.setText("Rp. " + String.format("%.2f", expense));
+        transactionAdapterfiltered.notifyDataSetChanged();
+        recyclerView.setAdapter(transactionAdapterfiltered);
+    }
+
 }

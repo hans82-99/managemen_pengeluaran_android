@@ -109,7 +109,8 @@
 
         <ImageView
             android:id="@+id/txtgambar"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
+            android:paddingVertical="5dp"
             android:layout_height="100dp"
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
@@ -158,26 +159,15 @@
 
             <Button
                 android:id="@+id/btnbatal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:width="100dp"
                 android:background="@drawable/buttondash"
                 android:fontFamily="@font/inter"
                 android:text="Batal"
-                android:layout_marginRight="20dp"
                 android:textColor="#EEEEEE"
                 android:textSize="10dp" />
 
-            <Button
-                android:id="@+id/btnubah"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:width="100dp"
-                android:background="@drawable/buttondash"
-                android:fontFamily="@font/inter"
-                android:text="Ubah"
-                android:textColor="#EEEEEEEE"
-                android:textSize="10dp" />
         </LinearLayout>
 
     </LinearLayout>

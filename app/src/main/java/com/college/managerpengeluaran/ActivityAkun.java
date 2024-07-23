@@ -51,7 +51,8 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     private Context context;
     private List<modelakun> takeakun;
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
-    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,12 +1,9 @@
 package com.college.managerpengeluaran;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -23,19 +20,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
-
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -64,16 +53,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ActivityTambah extends AppCompatActivity {
-    EditText namapengeluaran, jumlahpengeluaran, mediapembayaran, quantitypengeluaran, deskripsipengeluaran;
+public class ActivityPemasukan extends AppCompatActivity {
+    EditText namapemasukan, jumlahpemasukan, mediapembayaran, deskripsipemasukan;
     TextView hasiltanggal;
-    Button crudkategori, intentpengeluaran, intentpemasukan, tambahtanggal, buatkedashboard, buatstay, buttongambarpengeluaran;
-    private ArrayList<modelexpcategory> categoryList;
-    private ArrayAdapter<modelexpcategory> adapter;
+    Button crudkategori, intentpengeluaran, intentpemasukan, tambahtanggal, buatkedashboard, buatstay;
+    private ArrayList<modelinccategory> categoryList;
+    private ArrayAdapter<modelinccategory> adapter;
     private int selectedCategoryId;
     private List<modelakun> takeakun;
     private Context context;
@@ -91,7 +78,7 @@ public class ActivityTambah extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tambah);
+        setContentView(R.layout.activity_pemasukan);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -103,86 +90,18 @@ public class ActivityTambah extends AppCompatActivity {
         crudkategori = findViewById(R.id.crudkategori);
         intentpengeluaran = findViewById(R.id.intentpengeluaran);
         intentpemasukan = findViewById(R.id.intentpemasukan);
-        namapengeluaran = findViewById(R.id.namapengeluaran);
-        jumlahpengeluaran = findViewById(R.id.jumlahpengeluaran);
+        namapemasukan = findViewById(R.id.namapemasukan);
+        jumlahpemasukan = findViewById(R.id.jumlahpemasukan);
         mediapembayaran = findViewById(R.id.mediapembayaran);
-        quantitypengeluaran = findViewById(R.id.quantitypengeluaran);
         tambahtanggal = findViewById(R.id.tambahtanggal);
         hasiltanggal = findViewById(R.id.hasiltanggal);
         buatkedashboard = findViewById(R.id.buatkedashboard);
         buatstay = findViewById(R.id.buatstay);
-        deskripsipengeluaran = findViewById(R.id.deskripsipengeluaran);
+        deskripsipemasukan = findViewById(R.id.deskripsipemasukan);
         viewgambarpengeluaran = findViewById(R.id.viewgambarpengeluaran);
 
-        //buttongambarpengeluaran = findViewById(R.id.buttongambarpengeluaran);
-
-        //buat tambah gambar
-        //ImageView viewgambarpengeluaran = findViewById(R.id.viewgambarpengeluaran);
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
         RegisterResult();
-
-        // Menyiapkan ActivityResultLauncher
-        /*activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Uri uri = data.getData();
-                            if (uri != null) {
-                                try {
-                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                    viewgambarpengeluaran.setImageBitmap(bitmap);
-                                    exp_image_desc = bitmap; // Simpan bitmap jika perlu
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }
-        );*/
-
-        /*buttongambarpengeluaran.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean pick=true;
-                if (pick==true){
-                    if(!checkCameraPermission()){
-                        requestCameraPermission();
-
-                    }else PickImage();
-
-                }else {
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-
-                    }else PickImage();
-                }
-            }
-        });*/
-
-
-        // Setup listener untuk tombol gambar
-        /*buttongambarpengeluaran.setOnClickListener(v -> new AlertDialog.Builder(ActivityTambah.this)
-                .setTitle("Pilih Sumber")
-                .setItems(new CharSequence[]{"Ambil Foto", "Pilih dari Galeri"},
-                        (dialog, which) -> {
-                            switch (which) {
-                                case 0:
-                                    openCamera(); // Ambil foto dari kamera
-                                    break;
-                                case 1:
-                                    Intent intent = new Intent(Intent.ACTION_PICK);
-                                    intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    activityResultLauncher.launch(intent); // Pilih foto dari galeri
-                                    break;
-                            }
-                        }).show()
-        );*/
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -201,7 +120,7 @@ public class ActivityTambah extends AppCompatActivity {
                 int hari = kalender.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog ambildate = new DatePickerDialog(
-                        ActivityTambah.this,
+                        ActivityPemasukan.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
@@ -220,18 +139,18 @@ public class ActivityTambah extends AppCompatActivity {
         takeakun = dbHelper.AssistAkun().getAkun();
 
         crudkategori.setOnClickListener(v -> startActivity
-                (new Intent(getApplicationContext(), crudkategori.class))
+                (new Intent(getApplicationContext(), crudkategoriincome.class))
         );
 
-        intentpengeluaran.setOnClickListener(new View.OnClickListener() {
+        intentpemasukan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Anda Sudah berada pada tampilan pengeluaran", Toast.LENGTH_SHORT).show();
             }
         });
 
-        intentpemasukan.setOnClickListener(v -> startActivity
-                (new Intent(getApplicationContext(), ActivityPemasukan.class))
+        intentpengeluaran.setOnClickListener(v -> startActivity
+                (new Intent(getApplicationContext(), ActivityTambah.class))
         );
 
         fetchCategories();
@@ -239,20 +158,18 @@ public class ActivityTambah extends AppCompatActivity {
         buatkedashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (namapengeluaran.getText().toString().isEmpty() ||
-                        jumlahpengeluaran.getText().toString().isEmpty() ||
+                if (namapemasukan.getText().toString().isEmpty() ||
+                        jumlahpemasukan.getText().toString().isEmpty() ||
                         mediapembayaran.getText().toString().isEmpty() ||
-                        quantitypengeluaran.getText().toString().isEmpty() ||
-                        deskripsipengeluaran.getText().toString().isEmpty() ||
+                        deskripsipemasukan.getText().toString().isEmpty() ||
                         hasiltanggal.getText().toString().isEmpty()) {
-                    Toast.makeText(ActivityTambah.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPemasukan.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
                 } else {
-                    new inputexpense().execute(
-                            namapengeluaran.getText().toString(),
-                            jumlahpengeluaran.getText().toString(),
+                    new inputincome().execute(
+                            namapemasukan.getText().toString(),
+                            jumlahpemasukan.getText().toString(),
                             mediapembayaran.getText().toString(),
-                            quantitypengeluaran.getText().toString(),
-                            deskripsipengeluaran.getText().toString(),
+                            deskripsipemasukan.getText().toString(),
                             hasiltanggal.getText().toString(),
                             exp_image_desc
                             //bitmap // pass bitmap to AsyncTask
@@ -268,26 +185,25 @@ public class ActivityTambah extends AppCompatActivity {
         buatstay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (namapengeluaran.getText().toString().isEmpty() ||
-                        jumlahpengeluaran.getText().toString().isEmpty() ||
+                if (namapemasukan.getText().toString().isEmpty() ||
+                        jumlahpemasukan.getText().toString().isEmpty() ||
                         mediapembayaran.getText().toString().isEmpty() ||
-                        quantitypengeluaran.getText().toString().isEmpty() ||
-                        deskripsipengeluaran.getText().toString().isEmpty() ||
+                        deskripsipemasukan.getText().toString().isEmpty() ||
                         hasiltanggal.getText().toString().isEmpty()) {
-                    Toast.makeText(ActivityTambah.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPemasukan.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
                 } else {
-                    new inputexpense().execute(
-                            namapengeluaran.getText().toString(),
-                            jumlahpengeluaran.getText().toString(),
+                    new inputincome().execute(
+                            namapemasukan.getText().toString(),
+                            jumlahpemasukan.getText().toString(),
                             mediapembayaran.getText().toString(),
-                            quantitypengeluaran.getText().toString(),
-                            deskripsipengeluaran.getText().toString(),
+                            deskripsipemasukan.getText().toString(),
                             hasiltanggal.getText().toString(),
                             exp_image_desc
+                            //bitmap // pass bitmap to AsyncTask
                             //String.valueOf(account.getAccountId()),
                             //String.valueOf(selectedCategoryId)
                     );
-                    Toast.makeText(ActivityTambah.this, "Berhasil menambahkan pengeluaran", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityPemasukan.this, "Berhasil menginput data", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -335,7 +251,7 @@ public class ActivityTambah extends AppCompatActivity {
                                     exp_image_desc = bitmap; // Simpan bitmap jika perlu
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityPemasukan.this, "Error loading image", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 // ngecek return bitmap dari Extras
@@ -346,14 +262,14 @@ public class ActivityTambah extends AppCompatActivity {
                                         viewgambarpengeluaran.setImageBitmap(bitmap);
                                         exp_image_desc = bitmap; // Simpan bitmap jika perlu
                                     } else {
-                                        Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ActivityPemasukan.this, "No image selected", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityPemasukan.this, "No image selected", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {
-                            Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityPemasukan.this, "No image selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -372,41 +288,8 @@ public class ActivityTambah extends AppCompatActivity {
         activityResultLauncher.launch(chooserIntent);
     }
 
-
-    /*
-    private void checkPermissions() {
-        // Memeriksa apakah izin sudah diberikan
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Jika izin belum diberikan, mintalah izin
-            ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_CODE_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Izin diberikan, Anda bisa melanjutkan dengan memilih gambar
-            } else {
-                // Izin ditolak, beri tahu pengguna
-                Toast.makeText(this, "Permission denied. Unable to access gallery.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void openCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            activityResultLauncher.launch(takePictureIntent);
-        }
-    }*/
-
-
-    // Spinner
     private void fetchCategories() {
-        String url = BASE_URL + "getcatdb.php";
+        String url = BASE_URL + "getincategory.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -416,9 +299,9 @@ public class ActivityTambah extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        int id = jsonObject.getInt("expense_category_id");
-                        String name = jsonObject.getString("expense_category_name");
-                        categoryList.add(new modelexpcategory(id, name));
+                        int id = jsonObject.getInt("income_category_id");
+                        String name = jsonObject.getString("income_category_name");
+                        categoryList.add(new modelinccategory(id, name));
                     }
                     setupSpinner();
                 } catch (JSONException e) {
@@ -428,7 +311,7 @@ public class ActivityTambah extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ActivityTambah.this, "Error fetching data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityPemasukan.this, "Error fetching data", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -437,15 +320,15 @@ public class ActivityTambah extends AppCompatActivity {
 
     private void setupSpinner() {
         Spinner spinner = findViewById(R.id.inikategori);
-        adapter = new ExpCategoryAdapter(this, categoryList);
+        adapter = new IncCategoryAdapter(this, categoryList);
         //adapter.setDropDownViewResource(R.layout.spinnerkategori);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                modelexpcategory selectedCategory = (modelexpcategory) parent.getItemAtPosition(position);
-                selectedCategoryId = selectedCategory.getId_expense();
+                modelinccategory selectedCategory = (modelinccategory) parent.getItemAtPosition(position);
+                selectedCategoryId = selectedCategory.getIncome_category_id();
                 //Toast.makeText(ActivityTambah.this, "Selected: " + selectedCategory.getExpense_category_name(), Toast.LENGTH_SHORT).show();
             }
 
@@ -456,29 +339,28 @@ public class ActivityTambah extends AppCompatActivity {
         });
     }
 
-    class inputexpense extends AsyncTask<Object, Void, String> {
+    class inputincome extends AsyncTask<Object, Void, String> {
         @Override
         protected String doInBackground(Object... params) {
-            String expense_title = (String) params[0];
-            String expense_amount = (String) params[1];
-            String exp_payment_method = (String) params[2];
-            String quantity = (String) params[3];
-            String description = (String) params[4];
-            String date = (String) params[5];
-            Bitmap bitmap = (Bitmap) params[6];
+            String income_title = (String) params[0];
+            String income_amount = (String) params[1];
+            String inc_payment_method = (String) params[2];
+            String description = (String) params[3];
+            String date = (String) params[4];
+            Bitmap bitmap = (Bitmap) params[5];
             //String user_id = arg0[6];
             //String expense_category_id = arg0[7];
 
             // Encode image to Base64 if bitmap is not null
-            String exp_image_desc = "NULL";
+            String inc_image_desc = "NULL";
             if (bitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
-                exp_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+                inc_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
             }
             String user_id = String.valueOf(takeakun.get(0).getAccount_id());
-            String expense_category_id = String.valueOf(selectedCategoryId);
+            String income_category_id = String.valueOf(selectedCategoryId);
             //String datetime = arg0[9];
 
             LocalDateTime waktu = LocalDateTime.now();
@@ -490,23 +372,26 @@ public class ActivityTambah extends AppCompatActivity {
 
             try {
                 //URL url = new URL("http://10.0.2.2:80/Expense_Manager/simpanexpense.php");
-                URL url = new URL(BASE_URL + "simpanexpense.php");
+                URL url = new URL(BASE_URL + "simpanincome.php");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-                String data = URLEncoder.encode("expense_title", "UTF-8") + "=" + URLEncoder.encode(expense_title, "UTF-8");
-                data += "&" + URLEncoder.encode("expense_amount", "UTF-8") + "=" + URLEncoder.encode(expense_amount, "UTF-8");
-                data += "&" + URLEncoder.encode("exp_payment_method", "UTF-8") + "=" + URLEncoder.encode(exp_payment_method, "UTF-8");
-                data += "&" + URLEncoder.encode("quantity", "UTF-8") + "=" + URLEncoder.encode(quantity, "UTF-8");
+                String data = URLEncoder.encode("income_title", "UTF-8") + "=" + URLEncoder.encode(income_title, "UTF-8");
+                data += "&" + URLEncoder.encode("income_amount", "UTF-8") + "=" + URLEncoder.encode(income_amount, "UTF-8");
+                data += "&" + URLEncoder.encode("inc_payment_method", "UTF-8") + "=" + URLEncoder.encode(inc_payment_method, "UTF-8");
                 data += "&" + URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8");
                 data += "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8");
                 data += "&" + URLEncoder.encode("datetime", "UTF-8") + "=" + URLEncoder.encode(tampiljam, "UTF-8");
-                data += "&" + URLEncoder.encode("exp_image_desc", "UTF-8") + "=" + URLEncoder.encode(exp_image_desc, "UTF-8");
-                data += "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(user_id, "UTF-8");
-                data += "&" + URLEncoder.encode("expense_category_id", "UTF-8") + "=" + URLEncoder.encode(expense_category_id, "UTF-8");
-                Log.d("DEBUG", "DATA : " + data);
+                data += "&" + URLEncoder.encode("inc_image_desc", "UTF-8") + "=" + URLEncoder.encode(inc_image_desc, "UTF-8");
+
+                // Debug hasil encoding
+                String encodedUserId = URLEncoder.encode(user_id, "UTF-8");
+                String encodedIncomeCategoryId = URLEncoder.encode(income_category_id, "UTF-8");
+
+                data += "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + encodedUserId;
+                data += "&" + URLEncoder.encode("income_category_id", "UTF-8") + "=" + encodedIncomeCategoryId;
 
                 OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
                 writer.write(data);
@@ -532,27 +417,24 @@ public class ActivityTambah extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("insisActivity", "Result: " + result);
-            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) - Double.parseDouble(jumlahpengeluaran.getText().toString());
+            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) + Double.parseDouble(jumlahpemasukan.getText().toString());
             String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
             String tampungname = takeakun.get(0).getAccount_name();
             String tampungdesc = takeakun.get(0).getDescription();
             String tampungdate = hasiltanggal.getText().toString();
 
-            DatabaseHelper dbHelper = DatabaseHelper.getDB(ActivityTambah.this);
+            DatabaseHelper dbHelper = DatabaseHelper.getDB(ActivityPemasukan.this);
             dbHelper.AssistAkun().deleteAll();
             modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
             dbHelper.AssistAkun().addto(masukini);
 
-            new crudforbalance(ActivityTambah.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+            new crudforbalance(ActivityPemasukan.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
 
-            namapengeluaran.setText("");
-            jumlahpengeluaran.setText("");
+            namapemasukan.setText("");
+            jumlahpemasukan.setText("");
             mediapembayaran.setText("");
-            quantitypengeluaran.setText("");
-            deskripsipengeluaran.setText("");
+            deskripsipemasukan.setText("");
             hasiltanggal.setText("");
         }
     }
-
-
 }

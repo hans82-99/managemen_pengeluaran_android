@@ -14,12 +14,15 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
     private Class<ActivityTambah> activityTambahClass;
     private Class<TransactionAdapter> transactionAdapterClass;
     private Class<com.college.managerpengeluaran.transactionCrud> transactionCrudClass;
+    private Class<ActivityPemasukan> activityPemasukanClass;
+    private ActivityPemasukan.inputincome inputincome;
     private transactionCrud transactionCrud;
     private ActivityTambah.inputexpense inputexpense;
     private int flagini;
     HttpURLConnection conn = null;
-    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
 
 
     public crudforbalance(Class<ActivityTambah> activityTambahClass, ActivityTambah.inputexpense inputexpense, int i) {
@@ -38,6 +41,12 @@ public class crudforbalance extends AsyncTask<String, Void, String> {
         this.transactionCrudClass = transactionCrudClass;
         this.transactionAdapterClass = transactionAdapterClass;
         this.transactionCrud = transactionCrud;
+        this.flagini = i;
+    }
+
+    public crudforbalance(Class<ActivityPemasukan> activityPemasukanClass, ActivityPemasukan.inputincome inputexpense, int i) {
+        this.activityTambahClass = activityTambahClass;
+        this.inputincome = inputexpense;
         this.flagini = i;
     }
 

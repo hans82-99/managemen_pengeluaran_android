@@ -22,7 +22,8 @@ public class transactionCrud extends AsyncTask <String, Void, String>{
     List<modelakun> takeakun;
     DatabaseHelper dbHelper;
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
-    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
 
     public transactionCrud(Class<TransactionAdapter> transactionAdapterClass, DialogInterface.OnClickListener onClickListener, int i) {
         this.transactionAdapterClass = transactionAdapterClass;

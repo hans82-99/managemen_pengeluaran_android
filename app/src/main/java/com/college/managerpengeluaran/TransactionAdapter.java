@@ -26,8 +26,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private Context context;
     private List<modelakun> takeakun;
     private List<modelexpcategory> takecat;
+    private List<modelinccategory> takeinc;
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
-    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
 
     public TransactionAdapter(List<Transaction> transactions, Context context) {
         this.transactions = transactions;
@@ -57,6 +59,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                         int nampungid = transaction.getId();
                         if (transaction.isIncome()) {
                             double nampungamount = transaction.getAmount();
+                            DatabaseHelper inidb = DatabaseHelper.getDB(context);
+                            takeakun = inidb.AssistAkun().getAkun();
+                            double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance()) - nampungamount;
+
+                            String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
+                            String tampungname = takeakun.get(0).getAccount_name();
+                            String tampungdesc = takeakun.get(0).getDescription();
+                            String tampungdate = takeakun.get(0).getDate();
+
+                            //inidb.AssistAkun().deleteAll();
+                            modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+                            inidb.AssistAkun().naikver(masukini);
                             new transactionCrud(TransactionAdapter.class, this, 1).execute(String.valueOf(nampungid));
                         }else {
                             double nampungamount = transaction.getAmount();
@@ -69,9 +83,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                             String tampungdesc = takeakun.get(0).getDescription();
                             String tampungdate = takeakun.get(0).getDate();
 
-                            inidb.AssistAkun().deleteAll();
+                            //inidb.AssistAkun().deleteAll();
                             modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
-                            inidb.AssistAkun().addto(masukini);
+                            inidb.AssistAkun().naikver(masukini);
                             new transactionCrud(TransactionAdapter.class, this, 0).execute(String.valueOf(nampungid));
                             //notifyDataSetChanged();
                         }
@@ -106,7 +120,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 TextView kuantitas = inidialog.findViewById(R.id.txtkuantitas);
                 TextView paymentmethod = inidialog.findViewById(R.id.txtpaymentmethod);
                 Button batal = inidialog.findViewById(R.id.btnbatal);
-                Button ubah = inidialog.findViewById(R.id.btnubah);
+                //Button ubah = inidialog.findViewById(R.id.btnubah);
 
                 String kombotanggal = transaction.getDate() + " | " + transaction.getDatetime();
                 String tampungidtransaksi = String.valueOf(transaction.getId());
@@ -116,13 +130,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
                 DatabaseHelper inidb = DatabaseHelper.getDB(context);
                 takecat = inidb.AssistCat().getAllCat();
+                takeinc = inidb.AssistInc().getAllCat();
                 takeakun = inidb.AssistAkun().getAkun();
 
                 if (transaction.isIncome()) {
-                    for (int i = 0; i < takecat.size(); i++) {
-                        if (takecat.get(i).getId_expense() == transaction.getCategory()) {
-                            kategori.setText(takecat.get(i).getExpense_category_name());
+                    boolean found = true;
+                    for (int i = 0; i < takeinc.size(); i++) {
+                        if (takeinc.get(i).getIncome_category_id() == transaction.getCategory()) {
+                            kategori.setText(takeinc.get(i).getIncome_category_name());
+                            found = true;
+                            break;
                         }
+                    }
+                    if (!found || transaction.getCategory() == 0) {
+                        kategori.setText("null");
                     }
                 } else {
                     boolean found = false;
@@ -178,15 +199,56 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                         inidialog.dismiss();
                     }
                 });
+
+                gambar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dialog dialoggambar = new Dialog(context);
+                        dialoggambar.setContentView(R.layout.detailtransaksigambar);
+                        dialoggambar.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                        ImageView gambar = dialoggambar.findViewById(R.id.gambarfull);
+                        Button btntutup = dialoggambar.findViewById(R.id.btntutup);
+                        String imageUrl = BASE_URL + transaction.getImageDesc();
+                        // Load image using Picasso in the dialog
+                        Picasso.get()
+                                .load(imageUrl)
+                                //.placeholder(R.drawable.placeholder) // Add a placeholder image if needed
+                                //.error(R.drawable.error) // Add an error image if needed
+                                .into(gambar, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d("Picasso", "Image loaded successfully.");
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Log.e("Picasso", "Failed to load image: " + e.getMessage());
+                                    }
+                                });
+
+                        btntutup.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialoggambar.dismiss();
+                            }
+                        });
+                        dialoggambar.show();
+                    }
+                });
+
                 inidialog.show();
             }
         });
+
+        String incomecolor = "#50B498";
+        String expensecolor = "#EF5A6F";
 
         holder.title.setText(transaction.getTitle());
         holder.description.setText(transaction.getDescription());
         holder.date.setText(transaction.getDate());
         holder.amount.setText("Rp. " + String.valueOf(transaction.getAmount()));
-        holder.amount.setTextColor(transaction.isIncome() ? Color.GREEN : Color.RED);
+        holder.amount.setTextColor(transaction.isIncome() ? Color.parseColor(incomecolor) : Color.parseColor(expensecolor));
         // Load image using Picasso
        // Picasso.get()
                 //.load(transaction.getImageDesc())

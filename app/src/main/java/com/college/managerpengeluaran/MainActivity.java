@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -41,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView namadash, totalbalancedash, incomedash, expensedash;
     private RecyclerView historidash;
     private TransactionAdapter transactionAdapter;
+    private Button semua;
     private List<Transaction> transactionList;
     private List<modelakun> takeakun;
     private List<modelexpcategory> takecat;
+    private List<modelinccategory> takeinc;
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
 
     @Override
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
         takeakun = (List<modelakun>) dbHelper.AssistAkun().getAkun();
         takecat = (List<modelexpcategory>) dbHelper.AssistCat().getAllCat();
+        takeinc = (List<modelinccategory>) dbHelper.AssistInc().getAllCat();
 
         if (takeakun.isEmpty()) {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -100,12 +105,16 @@ public class MainActivity extends AppCompatActivity {
             });
             //new ngambilkategori().execute("https://mobilekuti2022.web.id/Expense_Manager/getcatdb.php");
             new ngambilkategori().execute(BASE_URL +"getcatdb.php");
+            new ngambilkategoriincome().execute(BASE_URL +"getincategory.php");
         }
 
         transactionList = new ArrayList<>();
         transactionAdapter = new TransactionAdapter(transactionList, this);
         historidash.setLayoutManager(new LinearLayoutManager(this));
         historidash.setAdapter(transactionAdapter);
+
+        semua = findViewById(R.id.showAllButton);
+        semua.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ActivityHistory.class)));
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nb_home);
@@ -300,4 +309,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class ngambilkategoriincome extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+                conn.disconnect();
+                response = content.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONArray category = new JSONArray(result);
+                for (int i = 0; i < category.length(); i++) {
+                    JSONObject jsonObject = category.getJSONObject(i);
+                    modelinccategory masuksini = new modelinccategory();
+                    masuksini.setIncome_category_id(jsonObject.getInt("income_category_id"));
+                    masuksini.setIncome_category_name(jsonObject.getString("income_category_name"));
+                    takeinc.add(masuksini);
+
+                    DatabaseHelper inidb = DatabaseHelper.getDB(MainActivity.this);
+                    inidb.AssistInc().addto(masuksini);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
