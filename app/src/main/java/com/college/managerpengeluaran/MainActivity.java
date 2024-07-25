@@ -30,12 +30,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
     private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+    private NumberFormat currencyFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        currencyFormat = NumberFormat.getInstance(new Locale("in", "ID")); // Indonesian locale
         namadash = findViewById(R.id.namadash);
         totalbalancedash = findViewById(R.id.totalbalancedash);
         incomedash = findViewById(R.id.incomedash);
@@ -94,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(this, "Silahkan pilih atau buat akun terlebih dahulu!", Toast.LENGTH_SHORT).show();
         } else {
             namadash.setText(takeakun.get(0).getAccount_name());
-            totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
+            //totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
+            totalbalancedash.setText("Rp " + currencyFormat.format(new BigDecimal(takeakun.get(0).getInitial_balance())) + ",00,-");
             fetchData(new DataFetchListener() {
                 @Override
                 public void onDataFetched(List<Transaction> transactions, double totalIncome, double totalExpense) {
@@ -222,8 +228,10 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             // Ini buat income dan expense profile
-                            incomedash.setText("Rp. " + totalIncome);
-                            expensedash.setText("Rp. " + totalExpense);
+                            //incomedash.setText("Rp. " + totalIncome);
+                            incomedash.setText("Rp " + currencyFormat.format(BigDecimal.valueOf(totalIncome)));
+                            expensedash.setText("Rp " + currencyFormat.format(BigDecimal.valueOf(totalExpense)));
+                            //expensedash.setText("Rp. " + totalExpense);
 
                             // Ini buat ngurutin data berdasarkan date terkini
                             Collections.sort(transactionList, new Comparator<Transaction>() {
