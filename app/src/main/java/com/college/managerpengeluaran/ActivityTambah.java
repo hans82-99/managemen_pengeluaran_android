@@ -168,7 +168,6 @@ public class ActivityTambah extends AppCompatActivity {
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
 
         RegisterResult();
-        loadDataFromSharedPreferences();
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -289,15 +288,11 @@ public class ActivityTambah extends AppCompatActivity {
                             //String.valueOf(selectedCategoryId)
                     );
                     Toast.makeText(ActivityTambah.this, "Berhasil menambahkan pengeluaran", Toast.LENGTH_SHORT).show();
-
-                    namapengeluaran.setText("");
-                    jumlahpengeluaran.setText("");
-                    mediapembayaran.setText("");
-                    quantitypengeluaran.setText("");
-                    deskripsipengeluaran.setText("");
                 }
             }
         });
+
+        loadDataFromSharedPreferences();
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -526,37 +521,18 @@ public class ActivityTambah extends AppCompatActivity {
 
             new crudforbalance(ActivityTambah.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
 
-            /*
+            LocalDateTime waktu = LocalDateTime.now();
+            DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String tampilwaktu = waktu.format(formatwaktu);
+            String tanggal = tampilwaktu.toString();
+
             namapengeluaran.setText("");
             jumlahpengeluaran.setText("");
             mediapembayaran.setText("");
             quantitypengeluaran.setText("");
             deskripsipengeluaran.setText("");
-            hasiltanggal.setText("");
-             */
+            hasiltanggal.setText(tanggal);
         }
-    }
-
-    private void saveDataToSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("namapengeluaran", namapengeluaran.getText().toString());
-        editor.putString("jumlahpengeluaran", jumlahpengeluaran.getText().toString());
-        editor.putString("mediapembayaran", mediapembayaran.getText().toString());
-        editor.putString("quantitypengeluaran", quantitypengeluaran.getText().toString());
-        editor.putString("deskripsipengeluaran", deskripsipengeluaran.getText().toString());
-        editor.putString("hasiltanggal", hasiltanggal.getText().toString());
-        editor.apply();
-    }
-
-    private void loadDataFromSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
-        namapengeluaran.setText(sharedPreferences.getString("namapengeluaran", ""));
-        jumlahpengeluaran.setText(sharedPreferences.getString("jumlahpengeluaran", ""));
-        mediapembayaran.setText(sharedPreferences.getString("mediapembayaran", ""));
-        quantitypengeluaran.setText(sharedPreferences.getString("quantitypengeluaran", ""));
-        deskripsipengeluaran.setText(sharedPreferences.getString("deskripsipengeluaran", ""));
-        hasiltanggal.setText(sharedPreferences.getString("hasiltanggal", ""));
     }
 
     @Override
@@ -571,6 +547,36 @@ public class ActivityTambah extends AppCompatActivity {
         saveDataToSharedPreferences();
     }
 
+    private void clearSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        Log.d("ActivityTambah", "SharedPreferences cleared.");
+    }
+
+    private void loadDataFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
+        namapengeluaran.setText(sharedPreferences.getString("namapengeluaran", ""));
+        jumlahpengeluaran.setText(sharedPreferences.getString("jumlahpengeluaran", ""));
+        mediapembayaran.setText(sharedPreferences.getString("mediapembayaran", ""));
+        quantitypengeluaran.setText(sharedPreferences.getString("quantitypengeluaran", ""));
+        deskripsipengeluaran.setText(sharedPreferences.getString("deskripsipengeluaran", ""));
+        hasiltanggal.setText(sharedPreferences.getString("hasiltanggal", ""));
+    }
+
+    private void saveDataToSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("namapengeluaran", namapengeluaran.getText().toString());
+        editor.putString("jumlahpengeluaran", jumlahpengeluaran.getText().toString());
+        editor.putString("mediapembayaran", mediapembayaran.getText().toString());
+        editor.putString("quantitypengeluaran", quantitypengeluaran.getText().toString());
+        editor.putString("deskripsipengeluaran", deskripsipengeluaran.getText().toString());
+        editor.putString("hasiltanggal", hasiltanggal.getText().toString());
+        editor.apply();
+    }
+
     public static String formatCurrency(String amount) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator('.');
@@ -580,12 +586,5 @@ public class ActivityTambah extends AppCompatActivity {
 
     public static String cleanCurrencyFormat(String formattedAmount) {
         return formattedAmount.replaceAll("[Rp.,]", "");
-    }
-
-    private void clearSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
     }
 }

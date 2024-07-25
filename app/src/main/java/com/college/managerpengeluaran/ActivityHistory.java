@@ -37,6 +37,8 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -358,6 +360,7 @@ public class ActivityHistory extends AppCompatActivity {
                             incomemasuk.setText("Rp. " + String.format("%.2f", totalIncome));
                             expensemasuk.setText("Rp. " + String.format("%.2f", totalExpense));
 
+                            /*
                             Collections.sort(transactionList, new Comparator<Transaction>() {
                                 @Override
                                 public int compare(Transaction t1, Transaction t2) {
@@ -366,6 +369,22 @@ public class ActivityHistory extends AppCompatActivity {
                                         return Integer.compare(t2.getId(), t1.getId());
                                     }
                                     return dateCompare;
+                                }
+                            });
+                             */
+                            Collections.sort(transactionList, new Comparator<Transaction>() {
+                                @Override
+                                public int compare(Transaction t1, Transaction t2) {
+                                    // Define date and datetime format
+                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                                    // Convert date and datetime strings to LocalDateTime
+                                    LocalDateTime dateTime1 = LocalDateTime.parse(t1.getDate() + " " + t1.getDatetime(), dateTimeFormatter);
+                                    LocalDateTime dateTime2 = LocalDateTime.parse(t2.getDate() + " " + t2.getDatetime(), dateTimeFormatter);
+
+                                    // Compare the LocalDateTime objects
+                                    return dateTime2.compareTo(dateTime1);
                                 }
                             });
 

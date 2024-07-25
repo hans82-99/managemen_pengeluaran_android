@@ -149,7 +149,6 @@ public class ActivityPemasukan extends AppCompatActivity {
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
 
         RegisterResult();
-        loadDataFromSharedPreferences();
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -256,14 +255,11 @@ public class ActivityPemasukan extends AppCompatActivity {
                             //String.valueOf(selectedCategoryId)
                     );
                     Toast.makeText(ActivityPemasukan.this, "Berhasil menginput data", Toast.LENGTH_SHORT).show();
-
-                    namapemasukan.setText("");
-                    jumlahpemasukan.setText("");
-                    mediapembayaran.setText("");
-                    deskripsipemasukan.setText("");
                 }
             }
         });
+
+        loadDataFromSharedPreferences();
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -490,12 +486,17 @@ public class ActivityPemasukan extends AppCompatActivity {
             new crudforbalance(ActivityPemasukan.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
 
             /*
+            LocalDateTime waktu = LocalDateTime.now();
+            DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String tampilwaktu = waktu.format(formatwaktu);
+            String tanggal = tampilwaktu.toString();
+             */
+
             namapemasukan.setText("");
             jumlahpemasukan.setText("");
             mediapembayaran.setText("");
             deskripsipemasukan.setText("");
-            hasiltanggal.setText("");
-             */
+            //hasiltanggal.setText(tanggal);
         }
     }
 

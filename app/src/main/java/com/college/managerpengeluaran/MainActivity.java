@@ -34,6 +34,8 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -238,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                             expensedash.setText("Rp " + currencyFormat.format(BigDecimal.valueOf(totalExpense)));
                             //expensedash.setText("Rp. " + totalExpense);
 
+                            /*
                             // Ini buat ngurutin data berdasarkan date terkini
                             Collections.sort(transactionList, new Comparator<Transaction>() {
                                 @Override
@@ -247,6 +250,23 @@ public class MainActivity extends AppCompatActivity {
                                         return Integer.compare(t2.getId(), t1.getId()); // Jika date sama, urutkan berdasarkan id
                                     }
                                     return dateCompare; // Urutkan berdasarkan date
+                                }
+                            });
+                             */
+
+                            Collections.sort(transactionList, new Comparator<Transaction>() {
+                                @Override
+                                public int compare(Transaction t1, Transaction t2) {
+                                    // Define date and datetime format
+                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                                    // Convert date and datetime strings to LocalDateTime
+                                    LocalDateTime dateTime1 = LocalDateTime.parse(t1.getDate() + " " + t1.getDatetime(), dateTimeFormatter);
+                                    LocalDateTime dateTime2 = LocalDateTime.parse(t2.getDate() + " " + t2.getDatetime(), dateTimeFormatter);
+
+                                    // Compare the LocalDateTime objects
+                                    return dateTime2.compareTo(dateTime1);
                                 }
                             });
 
