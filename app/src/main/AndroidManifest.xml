@@ -23,6 +23,9 @@
         android:theme="@style/Base.Theme.Managerpengeluaran"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ActivityLaporan"
+            android:exported="false" />
+        <activity
             android:name=".crudkategoriincome"
             android:exported="false" />
         <activity
