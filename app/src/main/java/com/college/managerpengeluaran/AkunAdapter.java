@@ -11,7 +11,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class AkunAdapter extends RecyclerView.Adapter<AkunAdapter.AkunViewHolder> {
 
@@ -46,7 +48,10 @@ public class AkunAdapter extends RecyclerView.Adapter<AkunAdapter.AkunViewHolder
         Account currentItem = accountList.get(position);
         holder.accountName.setText(currentItem.getAccountName());
         holder.description.setText(currentItem.getDescription());
-        holder.initialBalance.setText(String.valueOf(currentItem.getInitialBalance()));
+
+        // Format the initial balance as currency
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+        holder.initialBalance.setText(currencyFormat.format(currentItem.getInitialBalance()));
 
         holder.layarakun.setOnLongClickListener(v -> {
             if (mListener != null) {
