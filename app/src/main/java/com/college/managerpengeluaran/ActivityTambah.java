@@ -512,7 +512,8 @@ public class ActivityTambah extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("insisActivity", "Result: " + result);
-            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) - Double.parseDouble(jumlahpengeluaran.getText().toString());
+            String amount = cleanCurrencyFormat(jumlahpengeluaran.getText().toString());
+            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) - Double.parseDouble(amount);
             String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
             String tampungname = takeakun.get(0).getAccount_name();
             String tampungdesc = takeakun.get(0).getDescription();
