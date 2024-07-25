@@ -5,11 +5,15 @@
         android:title="Home"
         android:icon="@drawable/icon_nav_home"/>
     <item
+        android:id="@+id/nb_histori"
+        android:title="Histori"
+        android:icon="@drawable/history"/>
+    <item
         android:id="@+id/nb_tambah"
         android:title="Tambah"
         android:icon="@drawable/icon_nav_add"/>
     <item
-        android:id="@+id/nb_histori"
+        android:id="@+id/nb_laporan"
         android:title="Laporan"
         android:icon="@drawable/icon_nav_histori"/>
     <item

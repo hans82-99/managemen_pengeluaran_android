@@ -26,15 +26,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.college.managerpengeluaran.R;
-
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,37 +42,45 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class ActivityHistory extends AppCompatActivity {
-
-    Button buttonyear, buttonmonth, buttonweek, buttontoday, butonrange, butonall, cari;
-    EditText searchbar;
-    TextView incomemasuk, expensemasuk;
+public class ActivityLaporan extends AppCompatActivity {
+    Button buttonyear, buttonmonth, buttonweek, buttontoday, butonrange, butonall;
+    TextView incomemasuk, expensemasuk, incomebalance;
 
     private RecyclerView recyclerView;
-    private TransactionAdapter transactionAdapter;
-    private TransactionAdapter transactionAdapterfiltered;
+    private laporanAdapter laporanAdapter;
+    private laporanAdapter laporanAdapterfiltered;
     private List<Transaction> transactionList;
     private List<Transaction> transactionfiltered;
     private List<modelakun> takeakun;
+    private NumberFormat currencyFormat;
 
     public double income = 0.00;
     public double expense = 0.00;
     public double totalIncome = 0.00;
     public double totalExpense = 0.00;
+    public double balance = 0.00;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
+        setContentView(R.layout.activity_laporan);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        currencyFormat = NumberFormat.getInstance(new Locale("in", "ID"));
 
         recyclerView = findViewById(R.id.recyclerViewhistory);
         transactionList = new ArrayList<>();
         transactionfiltered = new ArrayList<>();
-        transactionAdapter = new TransactionAdapter(transactionList, this);
-        transactionAdapterfiltered = new TransactionAdapter(transactionfiltered, this);
+        laporanAdapter = new laporanAdapter(transactionList, this);
+        laporanAdapterfiltered = new laporanAdapter(transactionfiltered, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(transactionAdapter);
+        recyclerView.setAdapter(laporanAdapter);
 
         incomemasuk = findViewById(R.id.incomemasuk);
         expensemasuk = findViewById(R.id.expensemasuk);
@@ -82,6 +89,10 @@ public class ActivityHistory extends AppCompatActivity {
         DatabaseHelper dbHelper = DatabaseHelper.getDB(this);
         takeakun = dbHelper.AssistAkun().getAkun();
 
+        incomebalance = findViewById(R.id.incomebalance);
+        balance = Double.parseDouble(takeakun.get(0).getInitial_balance());
+        incomebalance.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(balance)));
+
         // Fetch data
         fetchData();
 
@@ -89,7 +100,7 @@ public class ActivityHistory extends AppCompatActivity {
         buttontoday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog inidialog = new Dialog(ActivityHistory.this);
+                Dialog inidialog = new Dialog(ActivityLaporan.this);
                 inidialog.setContentView(R.layout.filterday);
                 inidialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -107,7 +118,7 @@ public class ActivityHistory extends AppCompatActivity {
                         int hari = kalender.get(Calendar.DAY_OF_MONTH);
 
                         DatePickerDialog ambildate = new DatePickerDialog(
-                                ActivityHistory.this,
+                                ActivityLaporan.this,
                                 new DatePickerDialog.OnDateSetListener() {
                                     @Override
                                     public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
@@ -125,7 +136,7 @@ public class ActivityHistory extends AppCompatActivity {
                 butonrange.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Dialog inidialog = new Dialog(ActivityHistory.this);
+                        Dialog inidialog = new Dialog(ActivityLaporan.this);
                         inidialog.setContentView(R.layout.filterrange);
                         inidialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -145,7 +156,7 @@ public class ActivityHistory extends AppCompatActivity {
                                 int hari = kalender.get(Calendar.DAY_OF_MONTH);
 
                                 DatePickerDialog ambildate1 = new DatePickerDialog(
-                                        ActivityHistory.this,
+                                        ActivityLaporan.this,
                                         new DatePickerDialog.OnDateSetListener() {
                                             @Override
                                             public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
@@ -168,7 +179,7 @@ public class ActivityHistory extends AppCompatActivity {
                                 int hari = kalender.get(Calendar.DAY_OF_MONTH);
 
                                 DatePickerDialog ambildate2 = new DatePickerDialog(
-                                        ActivityHistory.this,
+                                        ActivityLaporan.this,
                                         new DatePickerDialog.OnDateSetListener() {
                                             @Override
                                             public void onDateSet(DatePicker view, int tahun, int bulan, int hari) {
@@ -218,25 +229,15 @@ public class ActivityHistory extends AppCompatActivity {
             }
         });
 
-        cari = findViewById(R.id.btncari);
-        searchbar = findViewById(R.id.searchBar);
-        cari.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchbar.getText().toString();
-                filterbyname(searchbar.getText().toString().trim());
-            }
-        });
-
         butonall = findViewById(R.id.buttonAll);
         butonall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 transactionfiltered.clear();
-                incomemasuk.setText("Rp. " + totalIncome);
-                expensemasuk.setText("Rp. " + totalExpense);
-                transactionAdapter.notifyDataSetChanged();
-                recyclerView.setAdapter(transactionAdapter);
+                incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(totalIncome)));
+                expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(totalExpense)));
+                laporanAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(laporanAdapter);
             }
         });
 
@@ -258,7 +259,7 @@ public class ActivityHistory extends AppCompatActivity {
 
         //navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nb_histori);
+        bottomNavigationView.setSelectedItemId(R.id.nb_laporan);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -273,6 +274,9 @@ public class ActivityHistory extends AppCompatActivity {
                 finish();
                 return true;
             } else if (itemId == R.id.nb_histori) {
+                startActivity(new Intent(getApplicationContext(), ActivityHistory.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
                 return true;
             } else if (itemId == R.id.nb_akun) {
                 startActivity(new Intent(getApplicationContext(), ActivityAkun.class));
@@ -280,9 +284,6 @@ public class ActivityHistory extends AppCompatActivity {
                 finish();
                 return true;
             } else if (itemId == R.id.nb_laporan) {
-                startActivity(new Intent(getApplicationContext(), ActivityLaporan.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
                 return true;
             }
             return false;
@@ -355,8 +356,8 @@ public class ActivityHistory extends AppCompatActivity {
                                 totalIncome += income.getDouble("income_amount");
                             }
 
-                            incomemasuk.setText("Rp. " + String.format("%.2f", totalIncome));
-                            expensemasuk.setText("Rp. " + String.format("%.2f", totalExpense));
+                            incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(totalIncome)));
+                            expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(totalExpense)));
 
                             Collections.sort(transactionList, new Comparator<Transaction>() {
                                 @Override
@@ -369,7 +370,7 @@ public class ActivityHistory extends AppCompatActivity {
                                 }
                             });
 
-                            transactionAdapter.notifyDataSetChanged();
+                            laporanAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -400,9 +401,9 @@ public class ActivityHistory extends AppCompatActivity {
                 } else {
                     expense += data.getAmount();
                 }
-                incomemasuk.setText("Rp. " + String.format("%.2f", income));
-                expensemasuk.setText("Rp. " + String.format("%.2f", expense));
-                recyclerView.setAdapter(transactionAdapterfiltered);
+                incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(income)));
+                expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(expense)));
+                recyclerView.setAdapter(laporanAdapterfiltered);
             }
         }
     }
@@ -425,9 +426,9 @@ public class ActivityHistory extends AppCompatActivity {
                     } else {
                         expense += data.getAmount();
                     }
-                    incomemasuk.setText("Rp. " + String.format("%.2f", income));
-                    expensemasuk.setText("Rp. " + String.format("%.2f", expense));
-                    recyclerView.setAdapter(transactionAdapterfiltered);
+                    incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(income)));
+                    expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(expense)));
+                    recyclerView.setAdapter(laporanAdapterfiltered);
                 }
             }
         } catch (ParseException e) {
@@ -448,10 +449,10 @@ public class ActivityHistory extends AppCompatActivity {
                 } else {
                     expense += data.getAmount();
                 }
-                incomemasuk.setText("Rp. " + String.format("%.2f", income));
-                expensemasuk.setText("Rp. " + String.format("%.2f", expense));
-                transactionAdapterfiltered.notifyDataSetChanged();
-                recyclerView.setAdapter(transactionAdapterfiltered);
+                incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(income)));
+                expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(expense)));
+                laporanAdapterfiltered.notifyDataSetChanged();
+                recyclerView.setAdapter(laporanAdapterfiltered);
             }
         }
     }
@@ -484,10 +485,10 @@ public class ActivityHistory extends AppCompatActivity {
             }
         }
 
-        incomemasuk.setText("Rp. " + String.format("%.2f", income));
-        expensemasuk.setText("Rp. " + String.format("%.2f", expense));
-        transactionAdapterfiltered.notifyDataSetChanged();
-        recyclerView.setAdapter(transactionAdapterfiltered);
+        incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(income)));
+        expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(expense)));
+        laporanAdapterfiltered.notifyDataSetChanged();
+        recyclerView.setAdapter(laporanAdapterfiltered);
     }
 
     private void filterByCurrentMonth() {
@@ -520,9 +521,9 @@ public class ActivityHistory extends AppCompatActivity {
             }
         }
 
-        incomemasuk.setText("Rp. " + String.format("%.2f", income));
-        expensemasuk.setText("Rp. " + String.format("%.2f", expense));
-        transactionAdapterfiltered.notifyDataSetChanged();
-        recyclerView.setAdapter(transactionAdapterfiltered);
+        incomemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(income)));
+        expensemasuk.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(expense)));
+        laporanAdapterfiltered.notifyDataSetChanged();
+        recyclerView.setAdapter(laporanAdapterfiltered);
     }
 }

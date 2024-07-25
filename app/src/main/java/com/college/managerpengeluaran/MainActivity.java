@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             namadash.setText(takeakun.get(0).getAccount_name());
             //totalbalancedash.setText("Rp. " + takeakun.get(0).getInitial_balance() + ",00");
-            totalbalancedash.setText("Rp " + currencyFormat.format(new BigDecimal(takeakun.get(0).getInitial_balance())) + ",00,-");
+            totalbalancedash.setText("Rp " + currencyFormat.format(new BigDecimal(takeakun.get(0).getInitial_balance())) + ",00");
             fetchData(new DataFetchListener() {
                 @Override
                 public void onDataFetched(List<Transaction> transactions, double totalIncome, double totalExpense) {
@@ -141,6 +141,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nb_akun) {
                 startActivity(new Intent(getApplicationContext(), ActivityAkun.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+                return true;
+            } else if (itemId == R.id.nb_laporan) {
+                startActivity(new Intent(getApplicationContext(), ActivityLaporan.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
                 return true;

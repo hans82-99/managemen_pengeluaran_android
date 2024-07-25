@@ -206,6 +206,7 @@ public class ActivityPemasukan extends AppCompatActivity {
         buatkedashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String amount = cleanCurrencyFormat(jumlahpemasukan.getText().toString());
                 if (namapemasukan.getText().toString().isEmpty() ||
                         jumlahpemasukan.getText().toString().isEmpty() ||
                         mediapembayaran.getText().toString().isEmpty() ||
@@ -213,9 +214,10 @@ public class ActivityPemasukan extends AppCompatActivity {
                         hasiltanggal.getText().toString().isEmpty()) {
                     Toast.makeText(ActivityPemasukan.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
                 } else {
+                    clearSharedPreferences();
                     new inputincome().execute(
                             namapemasukan.getText().toString(),
-                            jumlahpemasukan.getText().toString(),
+                            amount,
                             mediapembayaran.getText().toString(),
                             deskripsipemasukan.getText().toString(),
                             hasiltanggal.getText().toString(),
@@ -233,6 +235,7 @@ public class ActivityPemasukan extends AppCompatActivity {
         buatstay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String amount = cleanCurrencyFormat(jumlahpemasukan.getText().toString());
                 if (namapemasukan.getText().toString().isEmpty() ||
                         jumlahpemasukan.getText().toString().isEmpty() ||
                         mediapembayaran.getText().toString().isEmpty() ||
@@ -240,9 +243,10 @@ public class ActivityPemasukan extends AppCompatActivity {
                         hasiltanggal.getText().toString().isEmpty()) {
                     Toast.makeText(ActivityPemasukan.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
                 } else {
+                    clearSharedPreferences();
                     new inputincome().execute(
                             namapemasukan.getText().toString(),
-                            jumlahpemasukan.getText().toString(),
+                            amount,
                             mediapembayaran.getText().toString(),
                             deskripsipemasukan.getText().toString(),
                             hasiltanggal.getText().toString(),
@@ -531,5 +535,16 @@ public class ActivityPemasukan extends AppCompatActivity {
         symbols.setGroupingSeparator('.');
         DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
         return decimalFormat.format(Double.parseDouble(amount));
+    }
+
+    public static String cleanCurrencyFormat(String formattedAmount) {
+        return formattedAmount.replaceAll("[Rp.,]", "");
+    }
+
+    private void clearSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpemasukan", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }

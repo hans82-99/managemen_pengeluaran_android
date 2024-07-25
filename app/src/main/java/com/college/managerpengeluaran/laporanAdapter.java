@@ -19,12 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
+public class laporanAdapter extends RecyclerView.Adapter<laporanAdapter.ViewHolder>{
     private List<Transaction> transactions;
     private Context context;
     private List<modelakun> takeakun;
@@ -33,84 +30,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
     private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
-    private NumberFormat currencyFormat;
 
-    public TransactionAdapter(List<Transaction> transactions, Context context) {
+    public laporanAdapter(List<Transaction> transactions, Context context) {
         this.transactions = transactions;
         this.context = context;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.tampilhistory, parent, false);
+    public laporanAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.tampilreport, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(laporanAdapter.ViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
         int index = position;
-        currencyFormat = NumberFormat.getInstance(new Locale("in", "ID"));
 
-        holder.laykar.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder dialogini = new AlertDialog.Builder(context);
-                dialogini.setTitle("Hapus Transaksi");
-                dialogini.setMessage("Apakah anda yakin ingin menghapus transaksi ini?");
-                dialogini.setIcon(R.drawable.tongsampah);
-                dialogini.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int nampungid = transaction.getId();
-                        if (transaction.isIncome()) {
-                            double nampungamount = transaction.getAmount();
-                            DatabaseHelper inidb = DatabaseHelper.getDB(context);
-                            takeakun = inidb.AssistAkun().getAkun();
-                            double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance()) - nampungamount;
-
-                            String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
-                            String tampungname = takeakun.get(0).getAccount_name();
-                            String tampungdesc = takeakun.get(0).getDescription();
-                            String tampungdate = takeakun.get(0).getDate();
-
-                            //inidb.AssistAkun().deleteAll();
-                            modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
-                            inidb.AssistAkun().naikver(masukini);
-                            new transactionCrud(TransactionAdapter.class, this, 1).execute(String.valueOf(nampungid));
-                        }else {
-                            double nampungamount = transaction.getAmount();
-                            DatabaseHelper inidb = DatabaseHelper.getDB(context);
-                            takeakun = inidb.AssistAkun().getAkun();
-                            double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance()) + nampungamount;
-
-                            String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
-                            String tampungname = takeakun.get(0).getAccount_name();
-                            String tampungdesc = takeakun.get(0).getDescription();
-                            String tampungdate = takeakun.get(0).getDate();
-
-                            //inidb.AssistAkun().deleteAll();
-                            modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
-                            inidb.AssistAkun().naikver(masukini);
-                            new transactionCrud(TransactionAdapter.class, this, 0).execute(String.valueOf(nampungid));
-                            //notifyDataSetChanged();
-                        }
-                        transactions.remove(index);
-                        notifyItemRemoved(index);
-                    }
-                });
-                dialogini.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialogini.show();
-                return true;
-            }
-        });
-
-        holder.laykar.setOnClickListener(new View.OnClickListener() {
+        holder.laykarreport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Dialog inidialog = new Dialog(context);
@@ -132,7 +69,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 String tampungidtransaksi = String.valueOf(transaction.getId());
 
                 title.setText(transaction.getTitle());
-                jumlahpengeluaran.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(transaction.getAmount())) + ",00");
+                jumlahpengeluaran.setText("Rp. " + String.valueOf(transaction.getAmount()));
 
                 DatabaseHelper inidb = DatabaseHelper.getDB(context);
                 takecat = inidb.AssistCat().getAllCat();
@@ -251,16 +188,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         String expensecolor = "#EF5A6F";
 
         holder.title.setText(transaction.getTitle());
-        holder.description.setText(transaction.getDescription());
         holder.date.setText(transaction.getDate());
-        holder.amount.setText("Rp. " + currencyFormat.format(BigDecimal.valueOf(transaction.getAmount())) + ",00");
+        holder.amount.setText("Rp. " + String.valueOf(transaction.getAmount()));
         holder.amount.setTextColor(transaction.isIncome() ? Color.parseColor(incomecolor) : Color.parseColor(expensecolor));
-        // Load image using Picasso
-       // Picasso.get()
-                //.load(transaction.getImageDesc())
-                //.placeholder(R.drawable.placeholder) // Add a placeholder image if needed
-                //.error(R.drawable.error) // Add an error image if needed
-                //.into(holder.image);
     }
 
     @Override
@@ -273,14 +203,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CardView laykar;
-        TextView title, description, date, amount;
+        CardView laykarreport;
+        TextView title, date, amount;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            laykar = itemView.findViewById(R.id.laykar);
+            laykarreport = itemView.findViewById(R.id.laykarreport);
             title = itemView.findViewById(R.id.txtjudul);
-            description = itemView.findViewById(R.id.txtdeskripsi);
             date = itemView.findViewById(R.id.txtdate);
             amount = itemView.findViewById(R.id.txtduit);
         }

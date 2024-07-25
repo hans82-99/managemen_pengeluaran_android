@@ -122,7 +122,13 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
                 return true;
-            } else return itemId == R.id.nb_akun;
+            } else if (itemId == R.id.nb_laporan) {
+                startActivity(new Intent(getApplicationContext(), ActivityLaporan.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+                return true;
+            }
+            else return itemId == R.id.nb_akun;
         });
     }
 
