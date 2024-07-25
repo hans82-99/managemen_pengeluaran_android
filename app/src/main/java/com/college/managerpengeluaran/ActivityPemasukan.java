@@ -470,6 +470,7 @@ public class ActivityPemasukan extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("insisActivity", "Result: " + result);
+
             Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) + Double.parseDouble(jumlahpemasukan.getText().toString());
             String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
             String tampungname = takeakun.get(0).getAccount_name();

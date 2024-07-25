@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.text.NumberFormat;
 
 public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnItemClickListener {
 
@@ -53,11 +55,15 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
     private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    private NumberFormat currencyFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_akun);
+
+        currencyFormat = NumberFormat.getInstance(new Locale("in", "ID")); // Indonesian locale
+
 
         namadash = findViewById(R.id.namadash);
         namadeskripsi = findViewById(R.id.namadeskripsi);
@@ -89,7 +95,8 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         } else {
             namadash.setText(takeakun.get(0).getAccount_name());
             namadeskripsi.setText(takeakun.get(0).getDescription());
-            totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
+            totalbalancedash.setText("Rp " + currencyFormat.format(new BigDecimal(takeakun.get(0).getInitial_balance())));
+            //totalbalancedash.setText("Rp " + takeakun.get(0).getInitial_balance());
             totalduit();/// << method tampil total expense (betak dari mainActivity tio)
         }
 
@@ -131,7 +138,8 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
                             int accountId = accountObject.getInt("account_id");
                             String accountName = accountObject.getString("account_name");
                             String description = accountObject.getString("description");
-                            BigDecimal initialBalance = BigDecimal.valueOf(accountObject.getInt("initial_balance"));
+                            //BigDecimal initialBalance = BigDecimal.valueOf(accountObject.getInt("initial_balance"));
+                            BigDecimal initialBalance = new BigDecimal(accountObject.getString("initial_balance"));
                             Account account = new Account(accountId, accountName, description, initialBalance);
                             accountList.add(account);
                         }
@@ -155,10 +163,17 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        double totalIncome = calculateTotal("incomes", "income_amount", response);
+                        /*double totalIncome = calculateTotal("incomes", "income_amount", response);
                         double totalExpense = calculateTotal("expenses", "expense_amount", response);
                         incomeTextView.setText(String.format("Rp. %.2f", totalIncome));
-                        expenseTextView.setText(String.format("Rp. %.2f", totalExpense));
+                        expenseTextView.setText(String.format("Rp. %.2f", totalExpense));*/
+                        double totalIncome = calculateTotal("incomes", "income_amount", response);
+                        double totalExpense = calculateTotal("expenses", "expense_amount", response);
+                        BigDecimal totalBalance = new BigDecimal(takeakun.get(0).getInitial_balance()).add(BigDecimal.valueOf(totalIncome)).subtract(BigDecimal.valueOf(totalExpense));
+
+                        incomeTextView.setText("Rp " + currencyFormat.format(BigDecimal.valueOf(totalIncome)));
+                        expenseTextView.setText("Rp " + currencyFormat.format(BigDecimal.valueOf(totalExpense)));
+                        totalbalancedash.setText("Rp " + currencyFormat.format(totalBalance));
                     } catch (JSONException e) {
                         Log.e("JSONError", "Failed to parse JSON response: " + e.getMessage());
                     }
@@ -197,7 +212,8 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
 
         namadash.setText(clickedAccount.getAccountName());
         namadeskripsi.setText(clickedAccount.getDescription());
-        totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());
+        //totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());
+        totalbalancedash.setText("Rp " + currencyFormat.format(clickedAccount.getInitialBalance()));
 
         Intent godash = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(godash);
@@ -234,7 +250,9 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         saveButton.setOnClickListener(v -> {
             String newName = inputName.getText().toString();
             String newDescription = inputDescription.getText().toString();
-            double newBalance = Double.parseDouble(inputBalance.getText().toString());
+            //double newBalance = Double.parseDouble(inputBalance.getText().toString());
+            double newBalance = Double.parseDouble(inputBalance.getText().toString().replace(",", ""));
+
             updateAccount(account.getAccountId(), newName, newDescription, newBalance);
             editDialog.dismiss();
         });
@@ -318,6 +336,7 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
             String accountName = inputName.getText().toString();
             String description = inputDescription.getText().toString();
             double initialBalance = Double.parseDouble(inputBalance.getText().toString());
+            //double initialBalance = Double.parseDouble(inputBalance.getText().toString().replace(",", ""));
             String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
             TambahAkunKedb(accountName, description, initialBalance, currentDate);
