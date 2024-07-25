@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +52,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -92,6 +97,47 @@ public class ActivityPemasukan extends AppCompatActivity {
         intentpemasukan = findViewById(R.id.intentpemasukan);
         namapemasukan = findViewById(R.id.namapemasukan);
         jumlahpemasukan = findViewById(R.id.jumlahpemasukan);
+
+        jumlahpemasukan.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    jumlahpemasukan.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[Rp.,]", "");
+
+                    if (!cleanString.isEmpty()) {
+                        try {
+                            double parsed = Double.parseDouble(cleanString);
+                            String formatted = formatCurrency(cleanString);
+                            current = formatted;
+                            jumlahpemasukan.setText(formatted);
+                            jumlahpemasukan.setSelection(formatted.length());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        current = "";
+                        jumlahpemasukan.setText("");
+                    }
+
+                    jumlahpemasukan.addTextChangedListener(this);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         mediapembayaran = findViewById(R.id.mediapembayaran);
         tambahtanggal = findViewById(R.id.tambahtanggal);
         hasiltanggal = findViewById(R.id.hasiltanggal);
@@ -101,7 +147,9 @@ public class ActivityPemasukan extends AppCompatActivity {
         viewgambarpengeluaran = findViewById(R.id.viewgambarpengeluaran);
 
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
+
         RegisterResult();
+        loadDataFromSharedPreferences();
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -204,6 +252,11 @@ public class ActivityPemasukan extends AppCompatActivity {
                             //String.valueOf(selectedCategoryId)
                     );
                     Toast.makeText(ActivityPemasukan.this, "Berhasil menginput data", Toast.LENGTH_SHORT).show();
+
+                    namapemasukan.setText("");
+                    jumlahpemasukan.setText("");
+                    mediapembayaran.setText("");
+                    deskripsipemasukan.setText("");
                 }
             }
         });
@@ -430,11 +483,52 @@ public class ActivityPemasukan extends AppCompatActivity {
 
             new crudforbalance(ActivityPemasukan.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
 
+            /*
             namapemasukan.setText("");
             jumlahpemasukan.setText("");
             mediapembayaran.setText("");
             deskripsipemasukan.setText("");
             hasiltanggal.setText("");
+             */
         }
+    }
+
+    private void saveDataToSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpemasukan", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("namapemasukan", namapemasukan.getText().toString());
+        editor.putString("jumlahpemasukan", jumlahpemasukan.getText().toString());
+        editor.putString("mediapembayaran", mediapembayaran.getText().toString());
+        editor.putString("deskripsipemasukan", deskripsipemasukan.getText().toString());
+        editor.putString("hasiltanggal", hasiltanggal.getText().toString());
+        editor.apply();
+    }
+
+    private void loadDataFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpemasukan", MODE_PRIVATE);
+        namapemasukan.setText(sharedPreferences.getString("namapemasukan", ""));
+        jumlahpemasukan.setText(sharedPreferences.getString("jumlahpemasukan", ""));
+        mediapembayaran.setText(sharedPreferences.getString("mediapembayaran", ""));
+        deskripsipemasukan.setText(sharedPreferences.getString("deskripsipemasukan", ""));
+        hasiltanggal.setText(sharedPreferences.getString("hasiltanggal", ""));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveDataToSharedPreferences();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveDataToSharedPreferences();
+    }
+
+    public static String formatCurrency(String amount) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+        return decimalFormat.format(Double.parseDouble(amount));
     }
 }

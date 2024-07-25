@@ -7,10 +7,10 @@
     <item
         android:id="@+id/nb_tambah"
         android:title="Tambah"
-        android:icon="@drawable/icon_nav_tambah"/>
+        android:icon="@drawable/icon_nav_add"/>
     <item
         android:id="@+id/nb_histori"
-        android:title="Histori"
+        android:title="Laporan"
         android:icon="@drawable/icon_nav_histori"/>
     <item
         android:id="@+id/nb_akun"

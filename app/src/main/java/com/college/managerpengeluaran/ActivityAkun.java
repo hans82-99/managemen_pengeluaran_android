@@ -198,6 +198,9 @@ public class ActivityAkun extends AppCompatActivity implements AkunAdapter.OnIte
         namadash.setText(clickedAccount.getAccountName());
         namadeskripsi.setText(clickedAccount.getDescription());
         totalbalancedash.setText("Rp " + clickedAccount.getInitialBalance());
+
+        Intent godash = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(godash);
     }
 
     @Override

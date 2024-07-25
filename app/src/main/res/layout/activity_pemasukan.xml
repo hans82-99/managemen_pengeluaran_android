@@ -36,7 +36,7 @@
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
-            android:background="@drawable/buttondash"
+            android:background="@drawable/butonunclicked"
             android:fontFamily="@font/inter"
             android:text="Pemasukan"
             android:textColor="#F8EDE3"

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_bold"
-            android:text="Nicco Ananta Tri Kusuma"
+            android:text="NAMA"
             android:textColor="#8D493A"
             android:textSize="20sp" />
 
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
-            android:text="Total Balance"
+            android:text="Total Uang"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:textColor="#F8EDE3" />
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
-                android:text="Income"
+                android:text="Pemasukan"
                 android:textColor="#F8EDE3" />
 
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
-                android:text="Expense"
+                android:text="Pengeluaran"
                 android:textColor="#F8EDE3" />
 
         </LinearLayout>
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
-                android:text="Histori Pengeluaran"
+                android:text="Histori Transaksi"
                 android:textColor="#8D493A"
                 android:textSize="14sp" />
 
@@ -164,9 +164,10 @@
                 android:id="@+id/showAllButton"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:paddingHorizontal="20dp"
                 android:background="@drawable/buttondash"
                 android:fontFamily="@font/inter"
-                android:text="Semua"
+                android:text="Tampilkan semua"
                 android:textColor="#F8EDE3"
                 android:textSize="12sp" />
 

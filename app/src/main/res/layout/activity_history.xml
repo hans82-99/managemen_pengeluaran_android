@@ -8,7 +8,7 @@
     tools:context=".ActivityHistory">
 
     <LinearLayout
-        android:id="@+id/headerini"
+        android:id="@+id/palacuy"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -17,6 +17,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Laporan Keseluruhan"
+            android:textSize="20dp"
+            android:textColor="#8D493A"
+            android:fontFamily="@font/inter_semibold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/headerini"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/palacuy">
 
         <EditText
             android:id="@+id/searchBar"
@@ -147,7 +168,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jumlah Ekspense"
+                android:text="Jumlah Pengeluaran"
                 android:fontFamily="@font/inter"
                 android:textSize="12sp"
                 android:textColor="#8D493A"
@@ -170,7 +191,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jumlah Income"
+                android:text="Jumlah Pemasukan"
                 android:fontFamily="@font/inter"
                 android:textSize="12sp"
                 android:textColor="#8D493A"

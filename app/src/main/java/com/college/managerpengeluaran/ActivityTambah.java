@@ -6,12 +6,15 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -68,6 +71,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 public class ActivityTambah extends AppCompatActivity {
     EditText namapengeluaran, jumlahpengeluaran, mediapembayaran, quantitypengeluaran, deskripsipengeluaran;
     TextView hasiltanggal;
@@ -105,6 +111,47 @@ public class ActivityTambah extends AppCompatActivity {
         intentpemasukan = findViewById(R.id.intentpemasukan);
         namapengeluaran = findViewById(R.id.namapengeluaran);
         jumlahpengeluaran = findViewById(R.id.jumlahpengeluaran);
+
+        jumlahpengeluaran.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    jumlahpengeluaran.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[Rp.,]", "");
+
+                    if (!cleanString.isEmpty()) {
+                        try {
+                            double parsed = Double.parseDouble(cleanString);
+                            String formatted = formatCurrency(cleanString);
+                            current = formatted;
+                            jumlahpengeluaran.setText(formatted);
+                            jumlahpengeluaran.setSelection(formatted.length());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        current = "";
+                        jumlahpengeluaran.setText("");
+                    }
+
+                    jumlahpengeluaran.addTextChangedListener(this);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         mediapembayaran = findViewById(R.id.mediapembayaran);
         quantitypengeluaran = findViewById(R.id.quantitypengeluaran);
         tambahtanggal = findViewById(R.id.tambahtanggal);
@@ -119,70 +166,9 @@ public class ActivityTambah extends AppCompatActivity {
         //buat tambah gambar
         //ImageView viewgambarpengeluaran = findViewById(R.id.viewgambarpengeluaran);
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
+
         RegisterResult();
-
-        // Menyiapkan ActivityResultLauncher
-        /*activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Uri uri = data.getData();
-                            if (uri != null) {
-                                try {
-                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                    viewgambarpengeluaran.setImageBitmap(bitmap);
-                                    exp_image_desc = bitmap; // Simpan bitmap jika perlu
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }
-        );*/
-
-        /*buttongambarpengeluaran.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean pick=true;
-                if (pick==true){
-                    if(!checkCameraPermission()){
-                        requestCameraPermission();
-
-                    }else PickImage();
-
-                }else {
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-
-                    }else PickImage();
-                }
-            }
-        });*/
-
-
-        // Setup listener untuk tombol gambar
-        /*buttongambarpengeluaran.setOnClickListener(v -> new AlertDialog.Builder(ActivityTambah.this)
-                .setTitle("Pilih Sumber")
-                .setItems(new CharSequence[]{"Ambil Foto", "Pilih dari Galeri"},
-                        (dialog, which) -> {
-                            switch (which) {
-                                case 0:
-                                    openCamera(); // Ambil foto dari kamera
-                                    break;
-                                case 1:
-                                    Intent intent = new Intent(Intent.ACTION_PICK);
-                                    intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    activityResultLauncher.launch(intent); // Pilih foto dari galeri
-                                    break;
-                            }
-                        }).show()
-        );*/
+        loadDataFromSharedPreferences();
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -223,6 +209,20 @@ public class ActivityTambah extends AppCompatActivity {
                 (new Intent(getApplicationContext(), crudkategori.class))
         );
 
+        /*
+        crudkategori.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                namapengeluaran.getText().toString();
+                jumlahpengeluaran.getText().toString();
+                mediapembayaran.getText().toString();
+                quantitypengeluaran.getText().toString();
+                deskripsipengeluaran.getText().toString();
+                hasiltanggal.getText().toString();
+            }
+        });
+         */
+
         intentpengeluaran.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,9 +255,6 @@ public class ActivityTambah extends AppCompatActivity {
                             deskripsipengeluaran.getText().toString(),
                             hasiltanggal.getText().toString(),
                             exp_image_desc
-                            //bitmap // pass bitmap to AsyncTask
-                            //String.valueOf(account.getAccountId()),
-                            //String.valueOf(selectedCategoryId)
                     );
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
@@ -288,6 +285,12 @@ public class ActivityTambah extends AppCompatActivity {
                             //String.valueOf(selectedCategoryId)
                     );
                     Toast.makeText(ActivityTambah.this, "Berhasil menambahkan pengeluaran", Toast.LENGTH_SHORT).show();
+
+                    namapengeluaran.setText("");
+                    jumlahpengeluaran.setText("");
+                    mediapembayaran.setText("");
+                    quantitypengeluaran.setText("");
+                    deskripsipengeluaran.setText("");
                 }
             }
         });
@@ -371,38 +374,6 @@ public class ActivityTambah extends AppCompatActivity {
 
         activityResultLauncher.launch(chooserIntent);
     }
-
-
-    /*
-    private void checkPermissions() {
-        // Memeriksa apakah izin sudah diberikan
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Jika izin belum diberikan, mintalah izin
-            ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_CODE_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Izin diberikan, Anda bisa melanjutkan dengan memilih gambar
-            } else {
-                // Izin ditolak, beri tahu pengguna
-                Toast.makeText(this, "Permission denied. Unable to access gallery.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void openCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            activityResultLauncher.launch(takePictureIntent);
-        }
-    }*/
-
 
     // Spinner
     private void fetchCategories() {
@@ -545,14 +516,55 @@ public class ActivityTambah extends AppCompatActivity {
 
             new crudforbalance(ActivityTambah.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
 
+            /*
             namapengeluaran.setText("");
             jumlahpengeluaran.setText("");
             mediapembayaran.setText("");
             quantitypengeluaran.setText("");
             deskripsipengeluaran.setText("");
             hasiltanggal.setText("");
+             */
         }
     }
 
+    private void saveDataToSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("namapengeluaran", namapengeluaran.getText().toString());
+        editor.putString("jumlahpengeluaran", jumlahpengeluaran.getText().toString());
+        editor.putString("mediapembayaran", mediapembayaran.getText().toString());
+        editor.putString("quantitypengeluaran", quantitypengeluaran.getText().toString());
+        editor.putString("deskripsipengeluaran", deskripsipengeluaran.getText().toString());
+        editor.putString("hasiltanggal", hasiltanggal.getText().toString());
+        editor.apply();
+    }
 
+    private void loadDataFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("inputpengeluaran", MODE_PRIVATE);
+        namapengeluaran.setText(sharedPreferences.getString("namapengeluaran", ""));
+        jumlahpengeluaran.setText(sharedPreferences.getString("jumlahpengeluaran", ""));
+        mediapembayaran.setText(sharedPreferences.getString("mediapembayaran", ""));
+        quantitypengeluaran.setText(sharedPreferences.getString("quantitypengeluaran", ""));
+        deskripsipengeluaran.setText(sharedPreferences.getString("deskripsipengeluaran", ""));
+        hasiltanggal.setText(sharedPreferences.getString("hasiltanggal", ""));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveDataToSharedPreferences();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveDataToSharedPreferences();
+    }
+
+    public static String formatCurrency(String amount) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+        return decimalFormat.format(Double.parseDouble(amount));
+    }
 }
