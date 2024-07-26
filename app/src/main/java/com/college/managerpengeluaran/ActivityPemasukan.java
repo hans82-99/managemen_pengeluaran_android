@@ -214,7 +214,7 @@ public class ActivityPemasukan extends AppCompatActivity {
                     Toast.makeText(ActivityPemasukan.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
                 } else {
                     clearSharedPreferences();
-                    new inputincome().execute(
+                    new inputincomedashboard().execute(
                             namapemasukan.getText().toString(),
                             amount,
                             mediapembayaran.getText().toString(),
@@ -225,8 +225,7 @@ public class ActivityPemasukan extends AppCompatActivity {
                             //String.valueOf(account.getAccountId()),
                             //String.valueOf(selectedCategoryId)
                     );
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    Toast.makeText(ActivityPemasukan.this, "Processing...", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -497,6 +496,119 @@ public class ActivityPemasukan extends AppCompatActivity {
             mediapembayaran.setText("");
             deskripsipemasukan.setText("");
             //hasiltanggal.setText(tanggal);
+        }
+    }
+
+    class inputincomedashboard extends AsyncTask<Object, Void, String> {
+        @Override
+        protected String doInBackground(Object... params) {
+            String income_title = (String) params[0];
+            String income_amount = (String) params[1];
+            String inc_payment_method = (String) params[2];
+            String description = (String) params[3];
+            String date = (String) params[4];
+            Bitmap bitmap = (Bitmap) params[5];
+            //String user_id = arg0[6];
+            //String expense_category_id = arg0[7];
+
+            // Encode image to Base64 if bitmap is not null
+            String inc_image_desc = "NULL";
+            if (bitmap != null) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] bytes = byteArrayOutputStream.toByteArray();
+                inc_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+            }
+            String user_id = String.valueOf(takeakun.get(0).getAccount_id());
+            String income_category_id = String.valueOf(selectedCategoryId);
+            //String datetime = arg0[9];
+
+            LocalDateTime waktu = LocalDateTime.now();
+            DateTimeFormatter formatjam = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String tampiljam = waktu.format(formatjam);
+
+            String hasil = "";
+            HttpURLConnection conn = null;
+
+            try {
+                //URL url = new URL("http://10.0.2.2:80/Expense_Manager/simpanexpense.php");
+                URL url = new URL(BASE_URL + "simpanincome.php");
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                String data = URLEncoder.encode("income_title", "UTF-8") + "=" + URLEncoder.encode(income_title, "UTF-8");
+                data += "&" + URLEncoder.encode("income_amount", "UTF-8") + "=" + URLEncoder.encode(income_amount, "UTF-8");
+                data += "&" + URLEncoder.encode("inc_payment_method", "UTF-8") + "=" + URLEncoder.encode(inc_payment_method, "UTF-8");
+                data += "&" + URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(description, "UTF-8");
+                data += "&" + URLEncoder.encode("date", "UTF-8") + "=" + URLEncoder.encode(date, "UTF-8");
+                data += "&" + URLEncoder.encode("datetime", "UTF-8") + "=" + URLEncoder.encode(tampiljam, "UTF-8");
+                data += "&" + URLEncoder.encode("inc_image_desc", "UTF-8") + "=" + URLEncoder.encode(inc_image_desc, "UTF-8");
+
+                // Debug hasil encoding
+                String encodedUserId = URLEncoder.encode(user_id, "UTF-8");
+                String encodedIncomeCategoryId = URLEncoder.encode(income_category_id, "UTF-8");
+
+                data += "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + encodedUserId;
+                data += "&" + URLEncoder.encode("income_category_id", "UTF-8") + "=" + encodedIncomeCategoryId;
+
+                OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder("");
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                    break;
+                }
+                hasil = sb.toString();
+                return hasil;
+
+            } catch (Exception e) {
+                Log.e("ActivityTambah", "Exception: " + e.getMessage(), e);
+                return "Exception: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("insisActivity", "Result: " + result);
+
+            String amount = cleanCurrencyFormat(jumlahpemasukan.getText().toString());
+            Double jumlah = Double.parseDouble(takeakun.get(0).getInitial_balance().toString()) + Double.parseDouble(amount);
+            String tampungid = String.valueOf(takeakun.get(0).getAccount_id());
+            String tampungname = takeakun.get(0).getAccount_name();
+            String tampungdesc = takeakun.get(0).getDescription();
+            String tampungdate = hasiltanggal.getText().toString();
+
+            DatabaseHelper dbHelper = DatabaseHelper.getDB(ActivityPemasukan.this);
+            dbHelper.AssistAkun().deleteAll();
+            modelakun masukini = new modelakun(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+            dbHelper.AssistAkun().addto(masukini);
+
+            new crudforbalance(ActivityPemasukan.class, this, 1).execute(tampungid, tampungname, tampungdesc, String.valueOf(jumlah), tampungdate);
+
+
+            LocalDateTime waktu = LocalDateTime.now();
+            DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String tampilwaktu = waktu.format(formatwaktu);
+            String tanggal = tampilwaktu.toString();
+
+
+            namapemasukan.setText("");
+            jumlahpemasukan.setText("");
+            mediapembayaran.setText("");
+            deskripsipemasukan.setText("");
+            hasiltanggal.setText(tanggal);
+
+            Toast.makeText(ActivityPemasukan.this, "Berhasil menyimpan data", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
     }
 
