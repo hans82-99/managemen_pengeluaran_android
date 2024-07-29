@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">managerpengeluaran</string>
+    <string name="app_name">Aplikasi Keuangan Pesantren</string>
 
     <string-array name="kategori_array">
         <item>Item 1</item>
