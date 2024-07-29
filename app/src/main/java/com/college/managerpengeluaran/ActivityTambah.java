@@ -177,6 +177,8 @@ public class ActivityTambah extends AppCompatActivity {
         viewgambarpengeluaran.setOnClickListener(V -> PickImage());
 
         RegisterResult();
+        requestPermissions();
+
 
         LocalDateTime waktu = LocalDateTime.now();
         DateTimeFormatter formatwaktu = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -339,28 +341,20 @@ public class ActivityTambah extends AppCompatActivity {
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
+                        Uri imageUri= null; // Unified variable for image URI
+
                         if (data != null) {
-                            Uri uri = data.getData();
-                            if (uri != null) {
-                                // Process the picked image
-                                processImage(uri);
-                            } else {
-                                // Image from camera
-                                if (photoURI != null) {
-                                    processImage(photoURI);
-                                } else {
-                                    Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+                            imageUri = data.getData();
+                        } else if (photoURI != null) {
+                            imageUri = photoURI;
+                        }
+
+                        if (imageUri != null) {
+                            processImage(imageUri);
                         } else {
-                            // Image from camera
-                            if (photoURI != null) {
-                                processImage(photoURI);
-                            } else {
-                                Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(ActivityTambah.this, "No image selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -369,22 +363,16 @@ public class ActivityTambah extends AppCompatActivity {
 
     private void PickImage() {
         Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-
         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Ensure there's a camera activity to handle the intent
         if (captureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create a file to store the image
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
-                ex.printStackTrace();
+                // Handle the exception more gracefully, e.g., log the error
+                Log.e("PickImage", "Error creating image file", ex);
             }
 
-            // Continue only if the File was successfully created
             if (photoFile != null) {
                 photoURI = FileProvider.getUriForFile(this,
                         "com.college.managerpengeluaran.fileprovider",
@@ -395,9 +383,8 @@ public class ActivityTambah extends AppCompatActivity {
 
         Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
         if (captureIntent.resolveActivity(getPackageManager()) != null) {
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {captureIntent});
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{captureIntent});
         }
-
         activityResultLauncher.launch(chooserIntent);
     }
 
@@ -420,9 +407,10 @@ public class ActivityTambah extends AppCompatActivity {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             viewgambarpengeluaran.setImageBitmap(bitmap);
-            exp_image_desc = bitmap; // Simpan bitmap jika perlu
+            exp_image_desc = bitmap;
         } catch (IOException e) {
-            e.printStackTrace();
+            // Handle the exception more gracefully, e.g., log the error
+            Log.e("ProcessImage", "Error loading image", e);
             Toast.makeText(ActivityTambah.this, "Error loading image", Toast.LENGTH_SHORT).show();
         }
     }
@@ -504,7 +492,7 @@ public class ActivityTambah extends AppCompatActivity {
             String exp_image_desc = "NULL";
             if (bitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 10, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
                 exp_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
             }
@@ -608,7 +596,7 @@ public class ActivityTambah extends AppCompatActivity {
             String exp_image_desc = "NULL";
             if (bitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
                 exp_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
             }

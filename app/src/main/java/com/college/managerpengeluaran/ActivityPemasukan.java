@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +29,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -46,6 +48,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -54,10 +57,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityPemasukan extends AppCompatActivity {
@@ -73,12 +78,14 @@ public class ActivityPemasukan extends AppCompatActivity {
     ImageView viewgambarpengeluaran;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
+    //private static final String BASE_URL = "http://192.168.43.123/Expense_Manager/";
     private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
     //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
     /*private static final int REQUEST_CODE_PERMISSIONS = 1;
     private static final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };*/
+    private Uri photoURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -287,7 +294,7 @@ public class ActivityPemasukan extends AppCompatActivity {
             return false;
         });
     }
-
+/*
     private void RegisterResult() {
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -338,6 +345,80 @@ public class ActivityPemasukan extends AppCompatActivity {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {captureIntent});
 
         activityResultLauncher.launch(chooserIntent);
+    }
+*/
+
+    // Improved code with suggestions
+
+    private void RegisterResult() { // Renamed for clarity
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        Uri imageUri= null; // Unified variable for image URI
+
+                        if (data != null) {
+                            imageUri = data.getData();
+                        } else if (photoURI != null) {
+                            imageUri = photoURI;
+                        }
+
+                        if (imageUri != null) {
+                            processImage(imageUri);
+                        } else {
+                            Toast.makeText(ActivityPemasukan.this, "No image selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+    }
+
+    private void PickImage() {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (captureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Handle the exception more gracefully, e.g., log the error
+                Log.e("PickImage", "Error creating image file", ex);
+            }
+
+            if (photoFile != null) {
+                photoURI = FileProvider.getUriForFile(this,
+                        "com.college.managerpengeluaran.fileprovider",
+                        photoFile);
+                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            }
+        }
+
+        Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
+        if (captureIntent.resolveActivity(getPackageManager()) != null) {
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{captureIntent});
+        }activityResultLauncher.launch(chooserIntent);
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    private void processImage(Uri uri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            viewgambarpengeluaran.setImageBitmap(bitmap);
+            exp_image_desc = bitmap;
+        } catch (IOException e) {
+            // Handle the exception more gracefully, e.g., log the error
+            Log.e("ProcessImage", "Error loading image", e);
+            Toast.makeText(ActivityPemasukan.this, "Error loading image", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void fetchCategories() {
@@ -407,7 +488,7 @@ public class ActivityPemasukan extends AppCompatActivity {
             String inc_image_desc = "NULL";
             if (bitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
                 inc_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
             }
@@ -515,7 +596,7 @@ public class ActivityPemasukan extends AppCompatActivity {
             String inc_image_desc = "NULL";
             if (bitmap != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                 byte[] bytes = byteArrayOutputStream.toByteArray();
                 inc_image_desc = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
             }
