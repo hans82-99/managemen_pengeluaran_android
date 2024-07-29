@@ -23,7 +23,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:src="@drawable/logolaporan"/>
+            android:src="@drawable/logo_pesantren"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,6 +31,14 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
+                android:text="LAPORAN KEUANGAN"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,7 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="ALL"
+            android:text="SEMUA"
             android:textColor="#F8EDE3"
             android:fontFamily="@font/inter"
             android:textSize="12sp"
@@ -82,7 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="YEAR"
+            android:text="TAHUN"
             android:textColor="#F8EDE3"
             android:fontFamily="@font/inter"
             android:textSize="12sp"
@@ -93,7 +101,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="MONTH"
+            android:text="BULAN"
             android:textColor="#F8EDE3"
             android:fontFamily="@font/inter"
             android:textSize="12sp"
@@ -104,7 +112,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="DAY"
+            android:text="HARI"
             android:textColor="#F8EDE3"
             android:fontFamily="@font/inter"
             android:textSize="12sp"
@@ -115,7 +123,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="RANGE"
+            android:text="PERIODE"
             android:textColor="#F8EDE3"
             android:fontFamily="@font/inter"
             android:textSize="12sp"
@@ -225,7 +233,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jumlah Uang Saat Ini"
+                    android:text="Saldo Saat Ini"
                     android:fontFamily="@font/inter"
                     android:textSize="12sp"
                     android:textColor="#8D493A"

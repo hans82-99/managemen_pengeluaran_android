@@ -95,8 +95,8 @@ public class ActivityTambah extends AppCompatActivity {
     ImageView viewgambarpengeluaran;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     //private static final String BASE_URL = "http://192.168.1.13/Expense_Manager/";
-    //private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
-    private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
+    private static final String BASE_URL = "https://mobilekuti2022.web.id/Expense_Manager/";
+    //private static final String BASE_URL = "http://10.0.2.2:80/Expense_Manager/";
     /*private static final int REQUEST_CODE_PERMISSIONS = 1;
     private static final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE

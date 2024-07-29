@@ -235,7 +235,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/foredittext"
-                android:hint="Quantity"
+                android:hint="Kuantitas"
                 android:paddingTop="10dp"
                 android:paddingBottom="13dp"
                 android:paddingStart="20dp"
@@ -294,7 +294,7 @@
                     android:fontFamily="@font/inter"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="Buat - tetap disini"
+                    android:text="Simpan dan tetap disini"
                     android:textColor="#F8EDE3"
                     android:textSize="12sp" />
 
@@ -306,7 +306,7 @@
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/buttondash"
                     android:fontFamily="@font/inter"
-                    android:text="Buat"
+                    android:text="Simpan"
                     android:textColor="#F8EDE3"
                     android:textSize="12sp" />
 
